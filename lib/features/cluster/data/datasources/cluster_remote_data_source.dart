@@ -62,6 +62,24 @@ class ClusterRemoteDataSource {
     }
   }
 
+  /// كتابة مفتاح على القائد (POST /kv/put). port = منفذ القائد.
+  Future<void> putKey(int port, String key, String value) async {
+    await http.post(
+      Uri.parse('${ClusterConfig.httpUrl(port)}/kv/put'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'key': key, 'value': value}),
+    );
+  }
+
+  /// حذف مفتاح على القائد (POST /kv/del).
+  Future<void> deleteKey(int port, String key) async {
+    await http.post(
+      Uri.parse('${ClusterConfig.httpUrl(port)}/kv/del'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'key': key}),
+    );
+  }
+
   /// "يقتل" عقدة عبر منفذها (POST /admin/kill).
   Future<void> killNode(int port) async {
     await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/kill'));

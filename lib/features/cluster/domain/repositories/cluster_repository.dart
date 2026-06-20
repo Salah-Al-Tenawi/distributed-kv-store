@@ -20,4 +20,10 @@ abstract class ClusterRepository {
 
   /// "يُحيي" عقدة عبر منفذها.
   Future<void> reviveNode(int port);
+
+  /// كتابة/تحديث مفتاح على القائد (عبر منفذه).
+  Future<void> putKey(int leaderPort, String key, String value);
+
+  /// حذف مفتاح على القائد.
+  Future<void> deleteKey(int leaderPort, String key);
 }

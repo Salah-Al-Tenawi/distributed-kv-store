@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/cluster_node.dart';
 import '../../domain/repositories/cluster_repository.dart';
+import '../../domain/usecases/delete_key.dart';
 import '../../domain/usecases/kill_node.dart';
+import '../../domain/usecases/put_key.dart';
 import '../../domain/usecases/revive_node.dart';
 import '../../domain/usecases/watch_cluster.dart';
 
@@ -19,6 +21,8 @@ class ClusterCubit extends Cubit<ClusterState> {
   final WatchCluster watchCluster;
   final KillNode killNode;
   final ReviveNode reviveNode;
+  final PutKey putKey;
+  final DeleteKey deleteKey;
   final ClusterRepository repository;
 
   StreamSubscription<ClusterNode>? _subscription;
@@ -27,6 +31,8 @@ class ClusterCubit extends Cubit<ClusterState> {
     required this.watchCluster,
     required this.killNode,
     required this.reviveNode,
+    required this.putKey,
+    required this.deleteKey,
     required this.repository,
   }) : super(const ClusterState());
 
@@ -49,6 +55,18 @@ class ClusterCubit extends Cubit<ClusterState> {
 
   /// إحياء عقدة بعد قتلها.
   Future<void> revive(int port) => reviveNode(port);
+
+  /// كتابة مفتاح: نرسلها لمنفذ القائد الحالي (الكتابة للقائد فقط).
+  Future<void> put(String key, String value) async {
+    final port = state.leaderPort;
+    if (port != null) await putKey(port, key, value);
+  }
+
+  /// حذف مفتاح: نرسلها لمنفذ القائد الحالي.
+  Future<void> delete(String key) async {
+    final port = state.leaderPort;
+    if (port != null) await deleteKey(port, key);
+  }
 
   @override
   Future<void> close() async {

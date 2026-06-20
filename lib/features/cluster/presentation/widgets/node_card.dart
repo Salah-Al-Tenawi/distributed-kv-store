@@ -64,12 +64,15 @@ class NodeCard extends StatelessWidget {
             style: TextStyle(color: _roleColor, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
-          Text('Term: ${node.term}'),
+          Text('Term: ${node.term}  ·  commit: ${node.commitIndex}'),
           if (!isOffline && !node.isLeader && node.leaderId != null)
             Text(
               '→ ${node.leaderId}',
               style: const TextStyle(fontSize: 11, color: Colors.green),
             ),
+          const SizedBox(height: 8),
+          // المخزن المثبّت (Committed KV store) لهذه العقدة.
+          _KvBox(kv: node.kv),
           const SizedBox(height: 10),
           // زر القتل/الإحياء (Kill / Revive).
           SizedBox(
@@ -94,6 +97,48 @@ class NodeCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// صندوق يعرض محتوى المخزن (Committed key-value store) للعقدة.
+class _KvBox extends StatelessWidget {
+  final Map<String, String> kv;
+
+  const _KvBox({required this.kv});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 36, maxHeight: 96),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: kv.isEmpty
+          ? const Center(
+              child: Text(
+                'empty store',
+                style: TextStyle(fontSize: 11, color: Colors.grey),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final entry in kv.entries)
+                    Text(
+                      '${entry.key} = ${entry.value}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 }

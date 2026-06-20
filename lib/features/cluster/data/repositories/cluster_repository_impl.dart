@@ -22,4 +22,12 @@ class ClusterRepositoryImpl implements ClusterRepository {
 
   @override
   Future<void> reviveNode(int port) => remoteDataSource.reviveNode(port);
+
+  @override
+  Future<void> putKey(int leaderPort, String key, String value) =>
+      remoteDataSource.putKey(leaderPort, key, value);
+
+  @override
+  Future<void> deleteKey(int leaderPort, String key) =>
+      remoteDataSource.deleteKey(leaderPort, key);
 }

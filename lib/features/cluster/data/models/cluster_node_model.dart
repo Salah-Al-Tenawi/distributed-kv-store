@@ -14,6 +14,9 @@ class ClusterNodeModel extends ClusterNode {
     required super.leaderId,
     required super.online,
     super.suspectedOffline,
+    super.kv,
+    super.commitIndex,
+    super.logLength,
   });
 
   factory ClusterNodeModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +30,12 @@ class ClusterNodeModel extends ClusterNode {
       suspectedOffline:
           (json['suspectedOffline'] as List<dynamic>?)?.cast<String>() ??
               const [],
+      kv: (json['kv'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ??
+          const {},
+      commitIndex: json['commitIndex'] as int? ?? -1,
+      logLength: json['logLength'] as int? ?? 0,
     );
   }
 

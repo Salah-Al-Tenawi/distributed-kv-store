@@ -18,6 +18,15 @@ class ClusterNode extends Equatable {
   /// القُرَناء الذين يشكّ هذا القائد (Leader) بموتهم — فارغة لغير القائد.
   final List<String> suspectedOffline;
 
+  /// المخزن المثبّت (Committed key-value store) لهذه العقدة.
+  final Map<String, String> kv;
+
+  /// مؤشّر آخر مدخلة مثبّتة في السجلّ (Committed log index).
+  final int commitIndex;
+
+  /// عدد المدخلات في السجلّ (Log length).
+  final int logLength;
+
   const ClusterNode({
     required this.id,
     required this.port,
@@ -26,11 +35,24 @@ class ClusterNode extends Equatable {
     required this.leaderId,
     required this.online,
     this.suspectedOffline = const [],
+    this.kv = const {},
+    this.commitIndex = -1,
+    this.logLength = 0,
   });
 
   bool get isLeader => role == NodeRole.leader;
 
   @override
-  List<Object?> get props =>
-      [id, port, role, term, leaderId, online, suspectedOffline];
+  List<Object?> get props => [
+        id,
+        port,
+        role,
+        term,
+        leaderId,
+        online,
+        suspectedOffline,
+        kv,
+        commitIndex,
+        logLength,
+      ];
 }

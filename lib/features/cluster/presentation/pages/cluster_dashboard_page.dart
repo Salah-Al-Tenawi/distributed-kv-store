@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../cubit/cluster_cubit.dart';
+import '../widgets/kv_control_bar.dart';
 import '../widgets/node_card.dart';
 
 /// شاشة لوحة التحكّم: تعرض كل عُقَد العنقود وحالتها لحظياً.
@@ -52,22 +53,29 @@ class ClusterDashboardPage extends StatelessWidget {
               );
             }
             final cubit = context.read<ClusterCubit>();
-            return Padding(
-              padding: const EdgeInsets.all(24),
-              child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                alignment: WrapAlignment.center,
-                children: [
-                  for (final node in state.sortedNodes)
-                    NodeCard(
-                      node: node,
-                      isOffline: state.isOffline(node),
-                      onKill: () => cubit.kill(node.port),
-                      onRevive: () => cubit.revive(node.port),
+            return Column(
+              children: [
+                const KvControlBar(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (final node in state.sortedNodes)
+                          NodeCard(
+                            node: node,
+                            isOffline: state.isOffline(node),
+                            onKill: () => cubit.kill(node.port),
+                            onRevive: () => cubit.revive(node.port),
+                          ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+                ),
+              ],
             );
           },
         ),

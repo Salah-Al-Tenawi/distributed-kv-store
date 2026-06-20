@@ -11,6 +11,7 @@
 
 const { NodeState } = require('./states');
 const { TIMING, getPeers } = require('../config');
+const { recomputeCommit, followerSync } = require('./replication');
 
 class Election {
   /**
@@ -135,6 +136,10 @@ class Election {
     const now = Date.now();
     for (const peer of this.peers) this.peerLastAck[peer.id] = now;
     this.node.suspectedOffline = [];
+
+    // نهيّئ matchIndex: نعرف موقعنا، ونجهل مواقع الأقران بعد (-1).
+    this.node.matchIndex = { [this.node.id]: this.node.log.length - 1 };
+    for (const peer of this.peers) this.node.matchIndex[peer.id] = -1;
     this.node.notifyChange();
     console.log(`[${this.node.id}] 👑 أصبح قائداً (LEADER) في term=${this.node.term}`);
     this.startHeartbeats();
@@ -146,21 +151,37 @@ class Election {
 
   startHeartbeats() {
     this.stopHeartbeats();
-    const sendBeat = () => {
-      const args = { term: this.node.term, leaderId: this.node.id, entries: [] };
-      for (const peer of this.peers) {
-        this.rpc.sendAppendEntries(peer, args).then((reply) => {
-          if (!reply) return; // قرين لم يردّ (ربما ميت) — كاشف الأعطال سيتولّاه
-          // وصل ردّ → القرين حيّ، نسجّل وقت آخر ردّ (last ack).
-          this.peerLastAck[peer.id] = Date.now();
-          // إن ردّ بدورة أحدث → نحن قائد قديم (stale leader)، نتنحّى.
-          if (reply.term > this.node.term) this.becomeFollower(reply.term);
-        });
-      }
-      this.detectFailures(); // بعد إرسال النبضات، نفحص من تأخّر بالرد
+    this.sendHeartbeat(); // نبضة فورية عند الفوز
+    this.heartbeatTimer = setInterval(
+      () => this.sendHeartbeat(),
+      TIMING.heartbeatInterval,
+    );
+  }
+
+  /** يرسل نبضة (AppendEntries) لكل الأقران؛ تحمل السجلّ ومؤشّر التثبيت. */
+  sendHeartbeat() {
+    if (this.node.state !== NodeState.LEADER) return;
+    // النبضة تحمل السجلّ كاملاً + مؤشّر التثبيت (leaderCommit).
+    // سجلّ فارغ → نبضة خالصة (heartbeat)؛ وإلا → نسخ بيانات (replication).
+    const args = {
+      term: this.node.term,
+      leaderId: this.node.id,
+      entries: this.node.log,
+      leaderCommit: this.node.commitIndex,
     };
-    sendBeat(); // نبضة فورية عند الفوز
-    this.heartbeatTimer = setInterval(sendBeat, TIMING.heartbeatInterval);
+    for (const peer of this.peers) {
+      this.rpc.sendAppendEntries(peer, args).then((reply) => {
+        if (!reply) return; // قرين لم يردّ (ربما ميت) — كاشف الأعطال سيتولّاه
+        this.peerLastAck[peer.id] = Date.now();
+        // إن ردّ بدورة أحدث → نحن قائد قديم (stale leader)، نتنحّى.
+        if (reply.term > this.node.term) return this.becomeFollower(reply.term);
+        // نسجّل آخر مؤشّر نسخه القرين، ثم نعيد حساب التثبيت (commit).
+        this.node.matchIndex[peer.id] = reply.matchIndex ?? -1;
+        recomputeCommit(this.node, this.peers);
+        this.node.notifyChange();
+      });
+    }
+    this.detectFailures(); // بعد إرسال النبضات، نفحص من تأخّر بالرد
   }
 
   /**
@@ -244,7 +265,7 @@ class Election {
 
   /** يستقبل نبضة/سجلّات (AppendEntries) من القائد. */
   handleAppendEntries(args) {
-    const { term, leaderId } = args;
+    const { term, leaderId, entries, leaderCommit } = args;
 
     // نبضة من قائد بدورة أقدم → نرفض (قائد منتهي الصلاحية / stale leader).
     if (term < this.node.term) {
@@ -258,8 +279,17 @@ class Election {
     } else {
       this.resetElectionTimer(); // أهم سطر: النبضة تمنع بدء انتخاب جديد
     }
+
+    // نسخ السجلّ: نطابق سجلّنا مع القائد ونثبّت ما ثبّته.
+    followerSync(this.node, entries, leaderCommit ?? -1);
+
     this.node.notifyChange();
-    return { term: this.node.term, success: true };
+    // نُبلغ القائد بآخر مؤشّر نملكه (matchIndex) ليحسب الأغلبية.
+    return {
+      term: this.node.term,
+      success: true,
+      matchIndex: this.node.log.length - 1,
+    };
   }
 }
 

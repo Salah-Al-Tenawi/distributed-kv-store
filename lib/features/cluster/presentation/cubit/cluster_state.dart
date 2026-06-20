@@ -18,6 +18,17 @@ class ClusterState extends Equatable {
     return list;
   }
 
+  /// القائد الحالي إن وُجد (وكان حيّاً)، وإلا null.
+  ClusterNode? get leader {
+    for (final node in nodes.values) {
+      if (node.isLeader && node.online) return node;
+    }
+    return null;
+  }
+
+  /// منفذ القائد الحالي — نرسل إليه أوامر الكتابة (PUT/DEL).
+  int? get leaderPort => leader?.port;
+
   /// القُرَناء الذين يشكّ القائد الحالي (Leader) بموتهم.
   Set<String> get suspectedByLeader {
     for (final node in nodes.values) {

@@ -3,7 +3,9 @@ import 'package:get_it/get_it.dart';
 import '../../features/cluster/data/datasources/cluster_remote_data_source.dart';
 import '../../features/cluster/data/repositories/cluster_repository_impl.dart';
 import '../../features/cluster/domain/repositories/cluster_repository.dart';
+import '../../features/cluster/domain/usecases/delete_key.dart';
 import '../../features/cluster/domain/usecases/kill_node.dart';
+import '../../features/cluster/domain/usecases/put_key.dart';
 import '../../features/cluster/domain/usecases/revive_node.dart';
 import '../../features/cluster/domain/usecases/watch_cluster.dart';
 import '../../features/cluster/presentation/cubit/cluster_cubit.dart';
@@ -27,6 +29,8 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => WatchCluster(sl()));
   sl.registerLazySingleton(() => KillNode(sl()));
   sl.registerLazySingleton(() => ReviveNode(sl()));
+  sl.registerLazySingleton(() => PutKey(sl()));
+  sl.registerLazySingleton(() => DeleteKey(sl()));
 
   // Cubit (factory: نسخة جديدة عند كل طلب)
   sl.registerFactory(
@@ -34,6 +38,8 @@ Future<void> initDependencies() async {
       watchCluster: sl(),
       killNode: sl(),
       reviveNode: sl(),
+      putKey: sl(),
+      deleteKey: sl(),
       repository: sl(),
     ),
   );
