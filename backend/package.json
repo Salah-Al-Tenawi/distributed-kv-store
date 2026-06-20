@@ -1,0 +1,14 @@
+{
+  "name": "distributed-kv-backend",
+  "version": "0.1.0",
+  "description": "Distributed Key-Value Store cluster (mini-Raft) backend",
+  "main": "src/index.js",
+  "scripts": {
+    "node": "node src/index.js",
+    "cluster": "node scripts/start-cluster.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  }
+}
