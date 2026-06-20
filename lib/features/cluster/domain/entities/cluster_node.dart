@@ -27,6 +27,9 @@ class ClusterNode extends Equatable {
   /// عدد المدخلات في السجلّ (Log length).
   final int logLength;
 
+  /// الأقران المحجوبون عن هذه العقدة (عند انقسام الشبكة / Network Partition).
+  final List<String> blockedPeers;
+
   const ClusterNode({
     required this.id,
     required this.port,
@@ -38,9 +41,13 @@ class ClusterNode extends Equatable {
     this.kv = const {},
     this.commitIndex = -1,
     this.logLength = 0,
+    this.blockedPeers = const [],
   });
 
   bool get isLeader => role == NodeRole.leader;
+
+  /// هل هذه العقدة معزولة (ضمن انقسام شبكة)؟
+  bool get isPartitioned => blockedPeers.isNotEmpty;
 
   @override
   List<Object?> get props => [
@@ -54,5 +61,6 @@ class ClusterNode extends Equatable {
         kv,
         commitIndex,
         logLength,
+        blockedPeers,
       ];
 }

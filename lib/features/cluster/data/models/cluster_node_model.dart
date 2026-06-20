@@ -17,6 +17,7 @@ class ClusterNodeModel extends ClusterNode {
     super.kv,
     super.commitIndex,
     super.logLength,
+    super.blockedPeers,
   });
 
   factory ClusterNodeModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +37,8 @@ class ClusterNodeModel extends ClusterNode {
           const {},
       commitIndex: json['commitIndex'] as int? ?? -1,
       logLength: json['logLength'] as int? ?? 0,
+      blockedPeers:
+          (json['blockedPeers'] as List<dynamic>?)?.cast<String>() ?? const [],
     );
   }
 

@@ -64,6 +64,24 @@ class Election {
   }
 
   // ---------------------------------------------------------
+  // انقسام الشبكة (Network Partition — محاكاة انقطاع بين مجموعتين)
+  // ---------------------------------------------------------
+
+  /** يحجب التواصل مع مجموعة من الأقران (يحاكي انقطاع الشبكة عنهم). */
+  setPartition(blockedIds) {
+    this.node.blockedPeers = new Set(blockedIds);
+    console.log(`[${this.node.id}] ⚡ انقسام شبكة — حجب: [${blockedIds.join(', ')}]`);
+    this.node.notifyChange();
+  }
+
+  /** يزيل كل الحجب (شفاء الشبكة / Heal). */
+  heal() {
+    this.node.blockedPeers = new Set();
+    console.log(`[${this.node.id}] 🔗 شُفيت الشبكة (HEALED) — عاد التواصل الكامل`);
+    this.node.notifyChange();
+  }
+
+  // ---------------------------------------------------------
   // المؤقّتات (Timers)
   // ---------------------------------------------------------
 
@@ -116,10 +134,19 @@ class Election {
 
     this.resetElectionTimer(); // إن فشل الانتخاب، نحاول مجدداً لاحقاً
 
-    const args = { term: this.node.term, candidateId: this.node.id };
+    // نرفق معلومات سجلّنا ليتحقّق الناخبون أنه محدّث (Election Restriction).
+    const lastLogIndex = this.node.log.length - 1;
+    const lastLogTerm = lastLogIndex >= 0 ? this.node.log[lastLogIndex].term : 0;
+    const args = {
+      term: this.node.term,
+      candidateId: this.node.id,
+      lastLogIndex,
+      lastLogTerm,
+    };
 
     // نرسل طلب التصويت (RequestVote) لكل الأقران بالتوازي.
     for (const peer of this.peers) {
+      if (this.node.blockedPeers.has(peer.id)) continue; // محجوب (انقسام شبكة)
       this.rpc.sendRequestVote(peer, args).then((reply) => {
         this.handleVoteReply(reply);
       });
@@ -170,6 +197,7 @@ class Election {
       leaderCommit: this.node.commitIndex,
     };
     for (const peer of this.peers) {
+      if (this.node.blockedPeers.has(peer.id)) continue; // محجوب (انقسام شبكة)
       this.rpc.sendAppendEntries(peer, args).then((reply) => {
         if (!reply) return; // قرين لم يردّ (ربما ميت) — كاشف الأعطال سيتولّاه
         this.peerLastAck[peer.id] = Date.now();
@@ -239,6 +267,11 @@ class Election {
   handleRequestVote(args) {
     const { term, candidateId } = args;
 
+    // 0) المرشّح محجوب عنّا (انقسام شبكة) → نتجاهله.
+    if (this.node.blockedPeers.has(candidateId)) {
+      return { term: this.node.term, voteGranted: false };
+    }
+
     // 1) دورة المرشّح أقدم من دورتنا → نرفض.
     if (term < this.node.term) {
       return { term: this.node.term, voteGranted: false };
@@ -249,9 +282,19 @@ class Election {
       this.becomeFollower(term);
     }
 
-    // 3) نصوّت إن لم نكن صوّتنا لأحد بعد في هذه الدورة (أو صوّتنا لنفس المرشّح).
+    // 3) قيد الانتخاب (Election Restriction): لا نصوّت إلا لمرشّح سجلّه
+    //    محدّث بقدر سجلّنا على الأقل — يمنع مرشّحاً قديماً من محو بيانات مثبّتة.
+    const myLastIndex = this.node.log.length - 1;
+    const myLastTerm = myLastIndex >= 0 ? this.node.log[myLastIndex].term : 0;
+    const candidateLogOk =
+      (args.lastLogTerm ?? 0) > myLastTerm ||
+      ((args.lastLogTerm ?? 0) === myLastTerm &&
+        (args.lastLogIndex ?? -1) >= myLastIndex);
+
+    // 4) نصوّت إن لم نكن صوّتنا لأحد بعد في هذه الدورة وكان سجلّه محدّثاً.
     const canVote =
-      this.node.votedFor === null || this.node.votedFor === candidateId;
+      (this.node.votedFor === null || this.node.votedFor === candidateId) &&
+      candidateLogOk;
 
     if (canVote) {
       this.node.votedFor = candidateId;
@@ -266,6 +309,11 @@ class Election {
   /** يستقبل نبضة/سجلّات (AppendEntries) من القائد. */
   handleAppendEntries(args) {
     const { term, leaderId, entries, leaderCommit } = args;
+
+    // القائد محجوب عنّا (انقسام شبكة) → نتجاهل نبضته.
+    if (this.node.blockedPeers.has(leaderId)) {
+      return { term: this.node.term, success: false };
+    }
 
     // نبضة من قائد بدورة أقدم → نرفض (قائد منتهي الصلاحية / stale leader).
     if (term < this.node.term) {

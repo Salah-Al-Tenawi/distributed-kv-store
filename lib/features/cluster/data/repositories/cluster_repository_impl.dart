@@ -30,4 +30,11 @@ class ClusterRepositoryImpl implements ClusterRepository {
   @override
   Future<void> deleteKey(int leaderPort, String key) =>
       remoteDataSource.deleteKey(leaderPort, key);
+
+  @override
+  Future<void> partitionNode(int port, List<String> blocked) =>
+      remoteDataSource.partitionNode(port, blocked);
+
+  @override
+  Future<void> healNode(int port) => remoteDataSource.healNode(port);
 }

@@ -29,6 +29,9 @@ class ClusterState extends Equatable {
   /// منفذ القائد الحالي — نرسل إليه أوامر الكتابة (PUT/DEL).
   int? get leaderPort => leader?.port;
 
+  /// هل الشبكة مقسومة حالياً (أي عقدة تحجب أقراناً)؟
+  bool get isPartitioned => nodes.values.any((n) => n.isPartitioned);
+
   /// القُرَناء الذين يشكّ القائد الحالي (Leader) بموتهم.
   Set<String> get suspectedByLeader {
     for (final node in nodes.values) {

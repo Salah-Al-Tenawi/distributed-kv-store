@@ -18,6 +18,28 @@ class ClusterDashboardPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Distributed KV Store — Cluster'),
           actions: [
+            // زر تقسيم/شفاء الشبكة (Network Partition / Heal).
+            BlocBuilder<ClusterCubit, ClusterState>(
+              builder: (context, state) {
+                final cubit = context.read<ClusterCubit>();
+                return TextButton.icon(
+                  onPressed: state.isPartitioned
+                      ? cubit.healNetwork
+                      : cubit.partitionNetwork,
+                  icon: Icon(
+                    state.isPartitioned ? Icons.link : Icons.flash_on,
+                    color: state.isPartitioned ? Colors.green : Colors.amber,
+                  ),
+                  label: Text(
+                    state.isPartitioned ? 'Heal Network' : 'Partition Network',
+                    style: TextStyle(
+                      color: state.isPartitioned ? Colors.green : Colors.amber,
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 8),
             BlocBuilder<ClusterCubit, ClusterState>(
               builder: (context, state) {
                 return Padding(
@@ -55,6 +77,17 @@ class ClusterDashboardPage extends StatelessWidget {
             final cubit = context.read<ClusterCubit>();
             return Column(
               children: [
+                if (state.isPartitioned)
+                  Container(
+                    width: double.infinity,
+                    color: Colors.amber.withValues(alpha: 0.25),
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      '⚡ Network Partitioned — الأقلية متجمّدة، والأغلبية فقط تثبّت الكتابة (Split-Brain protection)',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 const KvControlBar(),
                 Expanded(
                   child: SingleChildScrollView(

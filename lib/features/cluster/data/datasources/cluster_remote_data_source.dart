@@ -90,6 +90,20 @@ class ClusterRemoteDataSource {
     await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/revive'));
   }
 
+  /// يحجب أقراناً عن عقدة (محاكاة انقسام شبكة / POST /admin/partition).
+  Future<void> partitionNode(int port, List<String> blocked) async {
+    await http.post(
+      Uri.parse('${ClusterConfig.httpUrl(port)}/admin/partition'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'blocked': blocked}),
+    );
+  }
+
+  /// يزيل الحجب عن عقدة (شفاء الشبكة / POST /admin/heal).
+  Future<void> healNode(int port) async {
+    await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/heal'));
+  }
+
   Future<void> dispose() async {
     for (final sub in _subscriptions) {
       await sub.cancel();

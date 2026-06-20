@@ -26,4 +26,10 @@ abstract class ClusterRepository {
 
   /// حذف مفتاح على القائد.
   Future<void> deleteKey(int leaderPort, String key);
+
+  /// يحجب أقراناً عن عقدة (محاكاة انقسام شبكة).
+  Future<void> partitionNode(int port, List<String> blocked);
+
+  /// يزيل الحجب عن عقدة (شفاء الشبكة).
+  Future<void> healNode(int port);
 }

@@ -63,6 +63,11 @@ class NodeCard extends StatelessWidget {
             isOffline ? 'OFFLINE' : node.role.name.toUpperCase(),
             style: TextStyle(color: _roleColor, fontWeight: FontWeight.w600),
           ),
+          if (node.isPartitioned)
+            const Text(
+              '⚡ isolated',
+              style: TextStyle(fontSize: 10, color: Colors.amber),
+            ),
           const SizedBox(height: 8),
           Text('Term: ${node.term}  ·  commit: ${node.commitIndex}'),
           if (!isOffline && !node.isLeader && node.leaderId != null)

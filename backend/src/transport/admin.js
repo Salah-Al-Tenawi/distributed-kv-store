@@ -18,6 +18,19 @@ function registerAdminRoutes(app, election) {
     election.revive();
     res.json({ ok: true, alive: election.node.alive });
   });
+
+  // انقسام الشبكة: نحجب التواصل مع الأقران في القائمة { blocked: [...] }.
+  app.post('/admin/partition', (req, res) => {
+    const blocked = Array.isArray(req.body?.blocked) ? req.body.blocked : [];
+    election.setPartition(blocked);
+    res.json({ ok: true, blocked });
+  });
+
+  // شفاء الشبكة: إزالة كل الحجب.
+  app.post('/admin/heal', (req, res) => {
+    election.heal();
+    res.json({ ok: true });
+  });
 }
 
 module.exports = { registerAdminRoutes };

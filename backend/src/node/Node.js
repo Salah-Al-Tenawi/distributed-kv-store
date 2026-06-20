@@ -32,6 +32,9 @@ class Node {
     this.alive = true;               // هل العقدة حيّة؟ "قتلها" يجعلها false (محاكاة Crash)
     this.suspectedOffline = [];       // قائمة الأقران الذين يشكّ القائد (Leader) بموتهم
 
+    // انقسام الشبكة (Network Partition): أقران لا نتواصل معهم (محاكاة انقطاع).
+    this.blockedPeers = new Set();
+
     // نسخ البيانات (Replication state):
     this.log = [];                   // السجلّ (Log): مصفوفة المدخلات {term, op, key, value}
     this.commitIndex = -1;           // أعلى مؤشّر مدخلة "مثبّتة" (Committed) — نُسخت لأغلبية
@@ -59,6 +62,7 @@ class Node {
       kv: this.kv,                     // المخزن المثبّت (Committed key-value)
       logLength: this.log.length,      // عدد المدخلات في السجلّ
       commitIndex: this.commitIndex,   // مؤشّر آخر مدخلة مثبّتة
+      blockedPeers: [...this.blockedPeers], // الأقران المحجوبون (عند انقسام الشبكة)
       timestamp: Date.now(),
     };
   }

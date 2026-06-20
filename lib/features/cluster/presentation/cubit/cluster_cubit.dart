@@ -68,6 +68,30 @@ class ClusterCubit extends Cubit<ClusterState> {
     if (port != null) await deleteKey(port, key);
   }
 
+  /// يقسم الشبكة إلى مجموعتين: {أول عقدتين} ⟷ {الباقي}.
+  /// كل عقدة تُحجب عن المجموعة الأخرى — لمحاكاة Network Partition.
+  Future<void> partitionNetwork() async {
+    final ids = state.sortedNodes.map((n) => n.id).toList();
+    if (ids.length < 3) return;
+    final groupA = ids.take(2).toSet(); // الأقلية
+    for (final node in state.sortedNodes) {
+      final inA = groupA.contains(node.id);
+      final blocked =
+          state.sortedNodes
+              .where((n) => groupA.contains(n.id) != inA)
+              .map((n) => n.id)
+              .toList();
+      await repository.partitionNode(node.port, blocked);
+    }
+  }
+
+  /// يشفي الشبكة: يزيل كل الحجب عن جميع العُقَد.
+  Future<void> healNetwork() async {
+    for (final node in state.sortedNodes) {
+      await repository.healNode(node.port);
+    }
+  }
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();
