@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/cluster_node.dart';
 import '../../domain/repositories/cluster_repository.dart';
+import '../../domain/usecases/kill_node.dart';
+import '../../domain/usecases/revive_node.dart';
 import '../../domain/usecases/watch_cluster.dart';
 
 part 'cluster_state.dart';
@@ -15,12 +17,16 @@ part 'cluster_state.dart';
 /// حالة عقدة جديدة. لا يعرف شيئاً عن WebSocket — فقط use cases.
 class ClusterCubit extends Cubit<ClusterState> {
   final WatchCluster watchCluster;
+  final KillNode killNode;
+  final ReviveNode reviveNode;
   final ClusterRepository repository;
 
   StreamSubscription<ClusterNode>? _subscription;
 
   ClusterCubit({
     required this.watchCluster,
+    required this.killNode,
+    required this.reviveNode,
     required this.repository,
   }) : super(const ClusterState());
 
@@ -37,6 +43,12 @@ class ClusterCubit extends Cubit<ClusterState> {
     updated[node.id] = node;
     emit(state.copyWith(nodes: updated));
   }
+
+  /// قتل عقدة (محاكاة Crash) — نمرّر منفذها للـ backend.
+  Future<void> kill(int port) => killNode(port);
+
+  /// إحياء عقدة بعد قتلها.
+  Future<void> revive(int port) => reviveNode(port);
 
   @override
   Future<void> close() async {

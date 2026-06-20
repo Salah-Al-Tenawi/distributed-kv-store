@@ -52,11 +52,18 @@ class PeerClient {
  * عند وصول رسالة، نستدعي الدالة المناسبة في وحدة الانتخاب (election).
  */
 function registerPeerRoutes(app, election) {
-  app.post('/rpc/request-vote', (req, res) => {
+  // إن كانت العقدة ميتة (alive=false)، نُسقط الاتصال بدون رد —
+  // فيراها القرين المُرسِل "صامتة" (ميتة) تماماً كأنها تعطّلت فعلاً.
+  const dropIfDead = (req, res, next) => {
+    if (!election.node.alive) return req.socket.destroy();
+    next();
+  };
+
+  app.post('/rpc/request-vote', dropIfDead, (req, res) => {
     res.json(election.handleRequestVote(req.body));
   });
 
-  app.post('/rpc/append-entries', (req, res) => {
+  app.post('/rpc/append-entries', dropIfDead, (req, res) => {
     res.json(election.handleAppendEntries(req.body));
   });
 }

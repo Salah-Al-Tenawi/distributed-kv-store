@@ -14,4 +14,10 @@ abstract class ClusterRepository {
 
   /// قطع الاتصال وتحرير الموارد.
   Future<void> disconnect();
+
+  /// "يقتل" عقدة (محاكاة تعطّل / Crash) عبر منفذها.
+  Future<void> killNode(int port);
+
+  /// "يُحيي" عقدة عبر منفذها.
+  Future<void> reviveNode(int port);
 }

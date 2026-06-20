@@ -28,6 +28,10 @@ class Node {
     this.votedFor = null;            // لمن صوّتنا في الدورة (Term) الحالية
     this.votesReceived = 0;          // كم صوتاً جمعنا (عندما نكون مرشّحاً Candidate)
 
+    // كشف الأعطال (Failure Detection state):
+    this.alive = true;               // هل العقدة حيّة؟ "قتلها" يجعلها false (محاكاة Crash)
+    this.suspectedOffline = [];       // قائمة الأقران الذين يشكّ القائد (Leader) بموتهم
+
     // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
     // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.
     this.onStateChange = () => {};
@@ -43,7 +47,8 @@ class Node {
       state: this.state,
       term: this.term,
       leaderId: this.leaderId,
-      online: true, // في Phase 0 العقدة دائماً حيّة (نضيف "القتل" لاحقاً)
+      online: this.alive,              // false عند "قتل" العقدة (محاكاة Crash)
+      suspectedOffline: this.suspectedOffline, // من يشكّ القائد بموتهم
       timestamp: Date.now(),
     };
   }

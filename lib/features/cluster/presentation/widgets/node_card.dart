@@ -6,11 +6,20 @@ import '../../domain/entities/cluster_node.dart';
 /// أخضر = Leader، أزرق = Follower، برتقالي = Candidate، رمادي = Offline.
 class NodeCard extends StatelessWidget {
   final ClusterNode node;
+  final bool isOffline;
+  final VoidCallback onKill;
+  final VoidCallback onRevive;
 
-  const NodeCard({super.key, required this.node});
+  const NodeCard({
+    super.key,
+    required this.node,
+    required this.isOffline,
+    required this.onKill,
+    required this.onRevive,
+  });
 
   Color get _roleColor {
-    if (!node.online) return Colors.grey;
+    if (isOffline) return Colors.grey;
     switch (node.role) {
       case NodeRole.leader:
         return Colors.green;
@@ -26,7 +35,7 @@ class NodeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 160,
+      width: 170,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _roleColor.withValues(alpha: 0.12),
@@ -36,33 +45,91 @@ class NodeCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            node.isLeader ? Icons.workspace_premium : Icons.dns,
-            color: _roleColor,
-            size: 32,
-          ),
+          // مؤشّر النبض (Heartbeat): قلب نابض أخضر للحيّة، رمادي للميتة.
+          _Heartbeat(active: !isOffline, color: _roleColor),
           const SizedBox(height: 8),
+          Icon(
+            node.isLeader && !isOffline ? Icons.workspace_premium : Icons.dns,
+            color: _roleColor,
+            size: 30,
+          ),
+          const SizedBox(height: 6),
           Text(
             node.id,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 4),
           Text(
-            node.role.name.toUpperCase(),
+            isOffline ? 'OFFLINE' : node.role.name.toUpperCase(),
             style: TextStyle(color: _roleColor, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text('Term: ${node.term}'),
-          Text('Port: ${node.port}', style: const TextStyle(fontSize: 12)),
-          const SizedBox(height: 4),
-          // على بطاقة التابع (Follower): نُظهر من هو قائده الحالي.
-          if (!node.isLeader && node.leaderId != null)
+          if (!isOffline && !node.isLeader && node.leaderId != null)
             Text(
               '→ ${node.leaderId}',
               style: const TextStyle(fontSize: 11, color: Colors.green),
             ),
+          const SizedBox(height: 10),
+          // زر القتل/الإحياء (Kill / Revive).
+          SizedBox(
+            width: double.infinity,
+            child: isOffline
+                ? OutlinedButton.icon(
+                    onPressed: onRevive,
+                    icon: const Icon(Icons.favorite, size: 16),
+                    label: const Text('Revive'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.green,
+                    ),
+                  )
+                : OutlinedButton.icon(
+                    onPressed: onKill,
+                    icon: const Icon(Icons.power_settings_new, size: 16),
+                    label: const Text('Kill'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                    ),
+                  ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// قلب نابض بسيط (Heartbeat indicator): يكبر ويصغر عندما تكون العقدة حيّة.
+class _Heartbeat extends StatefulWidget {
+  final bool active;
+  final Color color;
+
+  const _Heartbeat({required this.active, required this.color});
+
+  @override
+  State<_Heartbeat> createState() => _HeartbeatState();
+}
+
+class _HeartbeatState extends State<_Heartbeat>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 700),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!widget.active) {
+      return Icon(Icons.heart_broken, color: Colors.grey, size: 18);
+    }
+    return ScaleTransition(
+      scale: Tween(begin: 0.8, end: 1.2).animate(_controller),
+      child: Icon(Icons.favorite, color: widget.color, size: 18),
     );
   }
 }

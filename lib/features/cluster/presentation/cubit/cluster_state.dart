@@ -18,6 +18,19 @@ class ClusterState extends Equatable {
     return list;
   }
 
+  /// القُرَناء الذين يشكّ القائد الحالي (Leader) بموتهم.
+  Set<String> get suspectedByLeader {
+    for (final node in nodes.values) {
+      if (node.isLeader) return node.suspectedOffline.toSet();
+    }
+    return const {};
+  }
+
+  /// هل العقدة تُعدّ ميتة؟ إمّا أبلغت عن نفسها (online=false)،
+  /// أو القائد يشكّ بموتها (لم تردّ على نبضاته).
+  bool isOffline(ClusterNode node) =>
+      !node.online || suspectedByLeader.contains(node.id);
+
   ClusterState copyWith({
     Map<String, ClusterNode>? nodes,
     bool? connected,

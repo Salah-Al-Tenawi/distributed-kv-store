@@ -51,6 +51,7 @@ class ClusterDashboardPage extends StatelessWidget {
                 ),
               );
             }
+            final cubit = context.read<ClusterCubit>();
             return Padding(
               padding: const EdgeInsets.all(24),
               child: Wrap(
@@ -58,7 +59,13 @@ class ClusterDashboardPage extends StatelessWidget {
                 runSpacing: 16,
                 alignment: WrapAlignment.center,
                 children: [
-                  for (final node in state.sortedNodes) NodeCard(node: node),
+                  for (final node in state.sortedNodes)
+                    NodeCard(
+                      node: node,
+                      isOffline: state.isOffline(node),
+                      onKill: () => cubit.kill(node.port),
+                      onRevive: () => cubit.revive(node.port),
+                    ),
                 ],
               ),
             );

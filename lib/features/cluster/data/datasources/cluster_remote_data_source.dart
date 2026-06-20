@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../core/constants/cluster_config.dart';
@@ -59,6 +60,16 @@ class ClusterRemoteDataSource {
     } catch (_) {
       // رسالة غير متوقّعة — نتجاهلها.
     }
+  }
+
+  /// "يقتل" عقدة عبر منفذها (POST /admin/kill).
+  Future<void> killNode(int port) async {
+    await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/kill'));
+  }
+
+  /// "يُحيي" عقدة عبر منفذها (POST /admin/revive).
+  Future<void> reviveNode(int port) async {
+    await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/revive'));
   }
 
   Future<void> dispose() async {

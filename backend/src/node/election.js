@@ -24,10 +24,41 @@ class Election {
 
     this.electionTimer = null;   // مؤقّت بدء الانتخاب (Follower/Candidate)
     this.heartbeatTimer = null;  // مؤقّت إرسال النبضات (Leader فقط)
+    this.peerLastAck = {};       // آخر وقت ردّ فيه كل قرين (peer) — لكشف الأعطال
   }
 
   /** نقطة البدء: العقدة تبدأ تابعاً وتشغّل مؤقّت الانتخاب. */
   start() {
+    this.becomeFollower(this.node.term);
+  }
+
+  /** يوقف كل المؤقّتات (نستخدمه عند "قتل" العقدة / Crash). */
+  stop() {
+    clearTimeout(this.electionTimer);
+    this.stopHeartbeats();
+  }
+
+  // ---------------------------------------------------------
+  // قتل / إحياء العقدة (Kill / Revive — محاكاة الأعطال)
+  // ---------------------------------------------------------
+
+  /** "يقتل" العقدة: تتوقّف عن المشاركة تماماً (محاكاة Crash). */
+  kill() {
+    if (!this.node.alive) return;
+    this.node.alive = false;
+    this.stop();                       // توقف المؤقّتات (لا انتخاب ولا نبضات)
+    this.node.state = NodeState.FOLLOWER;
+    this.node.leaderId = null;
+    this.node.suspectedOffline = [];
+    console.log(`[${this.node.id}] 💀 قُتلت (CRASHED) — توقّفت عن المشاركة`);
+    this.node.notifyChange();
+  }
+
+  /** "يُحيي" العقدة: تعود تابعاً وتستأنف المشاركة. */
+  revive() {
+    if (this.node.alive) return;
+    this.node.alive = true;
+    console.log(`[${this.node.id}] ❤️  أُحييت (REVIVED) — عادت تابعاً (Follower)`);
     this.becomeFollower(this.node.term);
   }
 
@@ -65,6 +96,7 @@ class Election {
     this.node.term = term;
     this.node.votedFor = null;
     this.node.votesReceived = 0;
+    this.node.suspectedOffline = []; // كشف الأعطال مسؤولية القائد فقط
     this.stopHeartbeats();
     this.resetElectionTimer();
     this.node.notifyChange();
@@ -72,6 +104,7 @@ class Election {
 
   /** يبدأ انتخاباً: يصبح مرشّحاً (Candidate) ويطلب الأصوات. */
   async startElection() {
+    if (!this.node.alive) return; // العقدة الميتة لا تترشّح
     this.node.state = NodeState.CANDIDATE;
     this.node.term += 1;             // كل انتخاب = دورة (term) جديدة
     this.node.votedFor = this.node.id; // يصوّت لنفسه
@@ -98,6 +131,10 @@ class Election {
     this.node.state = NodeState.LEADER;
     this.node.leaderId = this.node.id;
     clearTimeout(this.electionTimer); // القائد لا يحتاج مؤقّت انتخاب
+    // نعتبر كل الأقران أحياء لحظة الفوز، ثم يبدأ الكاشف بمراقبتهم.
+    const now = Date.now();
+    for (const peer of this.peers) this.peerLastAck[peer.id] = now;
+    this.node.suspectedOffline = [];
     this.node.notifyChange();
     console.log(`[${this.node.id}] 👑 أصبح قائداً (LEADER) في term=${this.node.term}`);
     this.startHeartbeats();
@@ -113,15 +150,43 @@ class Election {
       const args = { term: this.node.term, leaderId: this.node.id, entries: [] };
       for (const peer of this.peers) {
         this.rpc.sendAppendEntries(peer, args).then((reply) => {
-          // إن ردّ قرين بدورة أحدث → معناه أننا قائد قديم، نتنحّى.
-          if (reply && reply.term > this.node.term) {
-            this.becomeFollower(reply.term);
-          }
+          if (!reply) return; // قرين لم يردّ (ربما ميت) — كاشف الأعطال سيتولّاه
+          // وصل ردّ → القرين حيّ، نسجّل وقت آخر ردّ (last ack).
+          this.peerLastAck[peer.id] = Date.now();
+          // إن ردّ بدورة أحدث → نحن قائد قديم (stale leader)، نتنحّى.
+          if (reply.term > this.node.term) this.becomeFollower(reply.term);
         });
       }
+      this.detectFailures(); // بعد إرسال النبضات، نفحص من تأخّر بالرد
     };
     sendBeat(); // نبضة فورية عند الفوز
     this.heartbeatTimer = setInterval(sendBeat, TIMING.heartbeatInterval);
+  }
+
+  /**
+   * كاشف الأعطال (Failure Detector) — يعمل في القائد فقط.
+   * أي قرين لم يردّ منذ failureTimeout (≈3 نبضات) يُعدّ ميتاً (OFFLINE).
+   */
+  detectFailures() {
+    if (this.node.state !== NodeState.LEADER) return;
+    const now = Date.now();
+    const offline = [];
+    for (const peer of this.peers) {
+      const last = this.peerLastAck[peer.id] || 0;
+      if (now - last > TIMING.failureTimeout) offline.push(peer.id);
+    }
+    // نُسجّل فقط عند تغيّر القائمة (دخول/خروج عقدة) لتجنّب إغراق السجلّ.
+    const changed =
+      offline.length !== this.node.suspectedOffline.length ||
+      offline.some((id) => !this.node.suspectedOffline.includes(id));
+    if (changed) {
+      const newlyDead = offline.filter((id) => !this.node.suspectedOffline.includes(id));
+      for (const id of newlyDead) {
+        console.log(`[${this.node.id}] ⚠️  القرين ${id} توقّف عن النبض — تمييزه OFFLINE`);
+      }
+      this.node.suspectedOffline = offline;
+      this.node.notifyChange();
+    }
   }
 
   // ---------------------------------------------------------

@@ -18,6 +18,7 @@ const TIMING = {
   heartbeatInterval: 100,      // كل كم ms يرسل القائد (Leader) نبضة (Heartbeat)
   electionTimeoutMin: 400,     // أدنى مهلة قبل بدء انتخاب (Election Timeout)
   electionTimeoutMax: 800,     // أقصى مهلة — النافذة الواسعة (400ms) تقلّل تصادم الأصوات (Split Vote)
+  failureTimeout: 350,         // إن غاب قرين (peer) عن الرد هذه المدة (~3 نبضات) → يُعدّ ميتاً (OFFLINE)
 };
 
 // دالة مساعدة: تُعيد باقي العُقَد (peers) عدا العقدة الحالية.

@@ -12,6 +12,7 @@ const { Node } = require('./node/Node');
 const { Election } = require('./node/election');
 const { startDashboardServer } = require('./transport/dashboard');
 const { PeerClient, registerPeerRoutes } = require('./transport/peerRpc');
+const { registerAdminRoutes } = require('./transport/admin');
 
 // نقرأ معرّف العقدة من سطر الأوامر (args)، أو نستخدم node-1 افتراضياً.
 const nodeId = process.argv[2] || 'node-1';
@@ -31,8 +32,9 @@ const { app } = startDashboardServer(node);
 const rpc = new PeerClient();
 const election = new Election(node, rpc);
 
-// 3) نسجّل مسارات استقبال الرسائل (RequestVote / AppendEntries).
+// 3) نسجّل مسارات استقبال الرسائل (RequestVote / AppendEntries) + أوامر التحكّم.
 registerPeerRoutes(app, election);
+registerAdminRoutes(app, election);
 
 // 4) نبدأ الانتخاب: العقدة تبدأ تابعاً، وإن لم تسمع قائداً تترشّح.
 //    مهلة بسيطة لإعطاء كل العُقَد فرصة للإقلاع قبل بدء الانتخابات.

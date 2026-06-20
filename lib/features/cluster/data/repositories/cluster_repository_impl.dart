@@ -16,4 +16,10 @@ class ClusterRepositoryImpl implements ClusterRepository {
 
   @override
   Future<void> disconnect() async => remoteDataSource.dispose();
+
+  @override
+  Future<void> killNode(int port) => remoteDataSource.killNode(port);
+
+  @override
+  Future<void> reviveNode(int port) => remoteDataSource.reviveNode(port);
 }

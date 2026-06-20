@@ -15,6 +15,9 @@ class ClusterNode extends Equatable {
   final String? leaderId;
   final bool online;
 
+  /// القُرَناء الذين يشكّ هذا القائد (Leader) بموتهم — فارغة لغير القائد.
+  final List<String> suspectedOffline;
+
   const ClusterNode({
     required this.id,
     required this.port,
@@ -22,10 +25,12 @@ class ClusterNode extends Equatable {
     required this.term,
     required this.leaderId,
     required this.online,
+    this.suspectedOffline = const [],
   });
 
   bool get isLeader => role == NodeRole.leader;
 
   @override
-  List<Object?> get props => [id, port, role, term, leaderId, online];
+  List<Object?> get props =>
+      [id, port, role, term, leaderId, online, suspectedOffline];
 }

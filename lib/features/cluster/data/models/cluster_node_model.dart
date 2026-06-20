@@ -13,6 +13,7 @@ class ClusterNodeModel extends ClusterNode {
     required super.term,
     required super.leaderId,
     required super.online,
+    super.suspectedOffline,
   });
 
   factory ClusterNodeModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +24,9 @@ class ClusterNodeModel extends ClusterNode {
       term: json['term'] as int? ?? 0,
       leaderId: json['leaderId'] as String?,
       online: json['online'] as bool? ?? true,
+      suspectedOffline:
+          (json['suspectedOffline'] as List<dynamic>?)?.cast<String>() ??
+              const [],
     );
   }
 
