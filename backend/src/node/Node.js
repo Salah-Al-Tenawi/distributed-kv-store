@@ -19,10 +19,14 @@ class Node {
     this.id = id;
     this.port = port;
 
-    // الحالة الأساسية:
-    this.state = NodeState.FOLLOWER; // كل عقدة تبدأ كتابع
+    // الحالة الأساسية (Core state):
+    this.state = NodeState.FOLLOWER; // كل عقدة تبدأ كتابع (Follower)
     this.term = 0;                   // الدورة (Term) — عدّاد منطقي للانتخابات
-    this.leaderId = null;            // من هو القائد الحالي (لا نعرف بعد)
+    this.leaderId = null;            // من هو القائد الحالي (Leader)؟ لا نعرف بعد
+
+    // حالة الانتخاب (Election state):
+    this.votedFor = null;            // لمن صوّتنا في الدورة (Term) الحالية
+    this.votesReceived = 0;          // كم صوتاً جمعنا (عندما نكون مرشّحاً Candidate)
 
     // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
     // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.

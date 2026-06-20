@@ -13,11 +13,11 @@ const CLUSTER = [
   { id: 'node-5', port: 4005 },
 ];
 
-// المهلات الزمنية (بالميلي ثانية) — سنستخدمها في المراحل القادمة.
+// المهلات الزمنية (بالميلي ثانية / milliseconds).
 const TIMING = {
-  heartbeatInterval: 50,       // كل كم ms يرسل القائد نبضة
-  electionTimeoutMin: 150,     // أدنى مهلة قبل بدء انتخاب
-  electionTimeoutMax: 300,     // أقصى مهلة (العشوائية بينهما تمنع التعادل)
+  heartbeatInterval: 100,      // كل كم ms يرسل القائد (Leader) نبضة (Heartbeat)
+  electionTimeoutMin: 400,     // أدنى مهلة قبل بدء انتخاب (Election Timeout)
+  electionTimeoutMax: 800,     // أقصى مهلة — النافذة الواسعة (400ms) تقلّل تصادم الأصوات (Split Vote)
 };
 
 // دالة مساعدة: تُعيد باقي العُقَد (peers) عدا العقدة الحالية.

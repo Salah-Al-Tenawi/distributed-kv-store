@@ -36,7 +36,11 @@ class NodeCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.dns, color: _roleColor, size: 32),
+          Icon(
+            node.isLeader ? Icons.workspace_premium : Icons.dns,
+            color: _roleColor,
+            size: 32,
+          ),
           const SizedBox(height: 8),
           Text(
             node.id,
@@ -50,6 +54,13 @@ class NodeCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text('Term: ${node.term}'),
           Text('Port: ${node.port}', style: const TextStyle(fontSize: 12)),
+          const SizedBox(height: 4),
+          // على بطاقة التابع (Follower): نُظهر من هو قائده الحالي.
+          if (!node.isLeader && node.leaderId != null)
+            Text(
+              '→ ${node.leaderId}',
+              style: const TextStyle(fontSize: 11, color: Colors.green),
+            ),
         ],
       ),
     );
