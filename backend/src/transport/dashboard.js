@@ -19,6 +19,17 @@ const { WebSocketServer } = require('ws');
  */
 function startDashboardServer(node) {
   const app = express();
+
+  // CORS: نسمح للوحة Flutter (على الويب) بإرسال الطلبات من أصل مختلف (origin).
+  // المتصفّح يرسل طلب preflight (OPTIONS) قبل أي POST يحمل JSON، فنردّ عليه.
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+  });
+
   app.use(express.json()); // ليفهم السيرفر أجسام الطلبات بصيغة JSON
 
   // --- نقطة فحص الصحة: نزورها بالمتصفح للتأكد أن العقدة تعمل ---
