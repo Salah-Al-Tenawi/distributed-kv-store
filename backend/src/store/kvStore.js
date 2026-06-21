@@ -20,6 +20,22 @@ function applyCommitted(node) {
       node.kv[entry.key] = entry.value;
     } else if (entry.op === 'DEL') {
       delete node.kv[entry.key];
+    } else if (entry.op === 'LOCK_ACQUIRE') {
+      // منح القفل: نسجّل المالك + رمز الحماية (Fencing Token) + مهلة الانتهاء (TTL).
+      node.locks[entry.key] = {
+        owner: entry.owner,
+        token: entry.token,
+        expiresAt: entry.expiresAt,
+      };
+    } else if (entry.op === 'LOCK_RELEASE') {
+      // لا نحذف القفل، بل نحرّره مع الاحتفاظ برمز الحماية (Fencing Token)
+      // ليبقى متزايداً في المرّة القادمة (لا يعود للرقم 1 أبداً).
+      const existing = node.locks[entry.key];
+      node.locks[entry.key] = {
+        owner: null,
+        token: existing?.token ?? 0,
+        expiresAt: 0,
+      };
     }
     console.log(
       `[${node.id}] ✅ طُبّقت المدخلة #${node.lastApplied}: ${entry.op} ${entry.key}` +

@@ -32,4 +32,10 @@ abstract class ClusterRepository {
 
   /// يزيل الحجب عن عقدة (شفاء الشبكة).
   Future<void> healNode(int port);
+
+  /// طلب قفل موزّع على القائد.
+  Future<void> acquireLock(int leaderPort, String lockName, String clientId);
+
+  /// تحرير قفل موزّع على القائد.
+  Future<void> releaseLock(int leaderPort, String lockName, String clientId);
 }

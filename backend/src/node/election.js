@@ -11,7 +11,7 @@
 
 const { NodeState } = require('./states');
 const { TIMING, getPeers } = require('../config');
-const { recomputeCommit, followerSync } = require('./replication');
+const { recomputeCommit, followerSync, leaderAppend } = require('./replication');
 
 class Election {
   /**
@@ -26,6 +26,7 @@ class Election {
     this.electionTimer = null;   // مؤقّت بدء الانتخاب (Follower/Candidate)
     this.heartbeatTimer = null;  // مؤقّت إرسال النبضات (Leader فقط)
     this.peerLastAck = {};       // آخر وقت ردّ فيه كل قرين (peer) — لكشف الأعطال
+    this.releasing = new Set();  // أقفال أصدرنا أمر تحريرها (لمنع تكرار الأمر)
   }
 
   /** نقطة البدء: العقدة تبدأ تابعاً وتشغّل مؤقّت الانتخاب. */
@@ -209,7 +210,27 @@ class Election {
         this.node.notifyChange();
       });
     }
-    this.detectFailures(); // بعد إرسال النبضات، نفحص من تأخّر بالرد
+    this.detectFailures();    // بعد إرسال النبضات، نفحص من تأخّر بالرد
+    this.sweepExpiredLocks(); // ونحرّر الأقفال المنتهية صلاحيتها (TTL)
+  }
+
+  /** القائد يحرّر الأقفال التي انتهت مهلتها (TTL) تلقائياً. */
+  sweepExpiredLocks() {
+    if (this.node.state !== NodeState.LEADER) return;
+    const now = Date.now();
+    for (const [name, lock] of Object.entries(this.node.locks)) {
+      if (lock.expiresAt <= now && !this.releasing.has(name)) {
+        this.releasing.add(name);
+        leaderAppend(this.node, { op: 'LOCK_RELEASE', key: name });
+        console.log(`[${this.node.id}] ⏰ انتهت مهلة القفل "${name}" — تحرير تلقائي`);
+      }
+    }
+    // ننظّف العلامات للأقفال التي تحرّرت فعلاً (بلا مالك)، ليمكن كنسها مجدداً لاحقاً.
+    for (const name of this.releasing) {
+      if (!this.node.locks[name] || this.node.locks[name].owner == null) {
+        this.releasing.delete(name);
+      }
+    }
   }
 
   /**

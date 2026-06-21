@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/cluster_node.dart';
 import '../../domain/repositories/cluster_repository.dart';
+import '../../domain/usecases/acquire_lock.dart';
 import '../../domain/usecases/delete_key.dart';
 import '../../domain/usecases/kill_node.dart';
 import '../../domain/usecases/put_key.dart';
+import '../../domain/usecases/release_lock.dart';
 import '../../domain/usecases/revive_node.dart';
 import '../../domain/usecases/watch_cluster.dart';
 
@@ -23,6 +25,8 @@ class ClusterCubit extends Cubit<ClusterState> {
   final ReviveNode reviveNode;
   final PutKey putKey;
   final DeleteKey deleteKey;
+  final AcquireLock acquireLock;
+  final ReleaseLock releaseLock;
   final ClusterRepository repository;
 
   StreamSubscription<ClusterNode>? _subscription;
@@ -33,6 +37,8 @@ class ClusterCubit extends Cubit<ClusterState> {
     required this.reviveNode,
     required this.putKey,
     required this.deleteKey,
+    required this.acquireLock,
+    required this.releaseLock,
     required this.repository,
   }) : super(const ClusterState());
 
@@ -90,6 +96,18 @@ class ClusterCubit extends Cubit<ClusterState> {
     for (final node in state.sortedNodes) {
       await repository.healNode(node.port);
     }
+  }
+
+  /// طلب قفل باسم عميل معيّن (يُرسَل للقائد).
+  Future<void> acquire(String lockName, String clientId) async {
+    final port = state.leaderPort;
+    if (port != null) await acquireLock(port, lockName, clientId);
+  }
+
+  /// تحرير قفل (يُرسَل للقائد).
+  Future<void> release(String lockName, String clientId) async {
+    final port = state.leaderPort;
+    if (port != null) await releaseLock(port, lockName, clientId);
   }
 
   @override

@@ -19,6 +19,7 @@ const TIMING = {
   electionTimeoutMin: 400,     // أدنى مهلة قبل بدء انتخاب (Election Timeout)
   electionTimeoutMax: 800,     // أقصى مهلة — النافذة الواسعة (400ms) تقلّل تصادم الأصوات (Split Vote)
   failureTimeout: 350,         // إن غاب قرين (peer) عن الرد هذه المدة (~3 نبضات) → يُعدّ ميتاً (OFFLINE)
+  lockTtl: 8000,               // مدة صلاحية القفل (TTL) بالميلي ثانية — ينتهي تلقائياً بعدها
 };
 
 // دالة مساعدة: تُعيد باقي العُقَد (peers) عدا العقدة الحالية.

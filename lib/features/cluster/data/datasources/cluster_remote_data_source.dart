@@ -90,6 +90,24 @@ class ClusterRemoteDataSource {
     await http.post(Uri.parse('${ClusterConfig.httpUrl(port)}/admin/revive'));
   }
 
+  /// طلب قفل موزّع على القائد (POST /lock/acquire).
+  Future<void> acquireLock(int port, String lockName, String clientId) async {
+    await http.post(
+      Uri.parse('${ClusterConfig.httpUrl(port)}/lock/acquire'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'lockName': lockName, 'clientId': clientId}),
+    );
+  }
+
+  /// تحرير قفل موزّع على القائد (POST /lock/release).
+  Future<void> releaseLock(int port, String lockName, String clientId) async {
+    await http.post(
+      Uri.parse('${ClusterConfig.httpUrl(port)}/lock/release'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'lockName': lockName, 'clientId': clientId}),
+    );
+  }
+
   /// يحجب أقراناً عن عقدة (محاكاة انقسام شبكة / POST /admin/partition).
   Future<void> partitionNode(int port, List<String> blocked) async {
     await http.post(

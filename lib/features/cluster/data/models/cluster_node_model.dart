@@ -1,4 +1,5 @@
 import '../../domain/entities/cluster_node.dart';
+import '../../domain/entities/lock_info.dart';
 
 /// نموذج البيانات (Model): يرث من الكيان ويضيف التحويل من/إلى JSON.
 ///
@@ -18,6 +19,7 @@ class ClusterNodeModel extends ClusterNode {
     super.commitIndex,
     super.logLength,
     super.blockedPeers,
+    super.locks,
   });
 
   factory ClusterNodeModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,11 @@ class ClusterNodeModel extends ClusterNode {
       logLength: json['logLength'] as int? ?? 0,
       blockedPeers:
           (json['blockedPeers'] as List<dynamic>?)?.cast<String>() ?? const [],
+      locks: (json['locks'] as Map<String, dynamic>?)?.map(
+            (name, info) =>
+                MapEntry(name, LockInfo.fromJson(info as Map<String, dynamic>)),
+          ) ??
+          const {},
     );
   }
 

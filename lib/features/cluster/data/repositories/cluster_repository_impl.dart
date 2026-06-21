@@ -37,4 +37,12 @@ class ClusterRepositoryImpl implements ClusterRepository {
 
   @override
   Future<void> healNode(int port) => remoteDataSource.healNode(port);
+
+  @override
+  Future<void> acquireLock(int leaderPort, String lockName, String clientId) =>
+      remoteDataSource.acquireLock(leaderPort, lockName, clientId);
+
+  @override
+  Future<void> releaseLock(int leaderPort, String lockName, String clientId) =>
+      remoteDataSource.releaseLock(leaderPort, lockName, clientId);
 }

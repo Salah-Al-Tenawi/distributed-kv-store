@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'lock_info.dart';
+
 /// حالات العقدة الممكنة (تطابق ما يرسله الـ backend في states.js).
 enum NodeRole { follower, candidate, leader, unknown }
 
@@ -30,6 +32,9 @@ class ClusterNode extends Equatable {
   /// الأقران المحجوبون عن هذه العقدة (عند انقسام الشبكة / Network Partition).
   final List<String> blockedPeers;
 
+  /// الأقفال الموزّعة (Distributed Locks): اسم القفل → معلوماته.
+  final Map<String, LockInfo> locks;
+
   const ClusterNode({
     required this.id,
     required this.port,
@@ -42,6 +47,7 @@ class ClusterNode extends Equatable {
     this.commitIndex = -1,
     this.logLength = 0,
     this.blockedPeers = const [],
+    this.locks = const {},
   });
 
   bool get isLeader => role == NodeRole.leader;
@@ -62,5 +68,6 @@ class ClusterNode extends Equatable {
         commitIndex,
         logLength,
         blockedPeers,
+        locks,
       ];
 }

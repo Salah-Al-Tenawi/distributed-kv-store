@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../cubit/cluster_cubit.dart';
 import '../widgets/kv_control_bar.dart';
+import '../widgets/lock_panel.dart';
 import '../widgets/node_card.dart';
 
 /// شاشة لوحة التحكّم: تعرض كل عُقَد العنقود وحالتها لحظياً.
@@ -89,6 +90,8 @@ class ClusterDashboardPage extends StatelessWidget {
                     ),
                   ),
                 const KvControlBar(),
+                const SizedBox(height: 8),
+                const LockPanel(),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(24),

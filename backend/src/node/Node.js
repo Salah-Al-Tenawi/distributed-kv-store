@@ -42,6 +42,10 @@ class Node {
     this.kv = {};                    // المخزن الفعلي (State Machine): مفتاح → قيمة
     this.matchIndex = {};            // (للقائد) آخر مؤشّر نسخه كل قرين — لحساب الأغلبية
 
+    // الأقفال الموزّعة (Distributed Locks):
+    // lockName → { owner, token (Fencing Token), expiresAt (TTL) }
+    this.locks = {};
+
     // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
     // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.
     this.onStateChange = () => {};
@@ -63,6 +67,7 @@ class Node {
       logLength: this.log.length,      // عدد المدخلات في السجلّ
       commitIndex: this.commitIndex,   // مؤشّر آخر مدخلة مثبّتة
       blockedPeers: [...this.blockedPeers], // الأقران المحجوبون (عند انقسام الشبكة)
+      locks: this.locks,               // الأقفال الموزّعة (owner/token/expiresAt)
       timestamp: Date.now(),
     };
   }
