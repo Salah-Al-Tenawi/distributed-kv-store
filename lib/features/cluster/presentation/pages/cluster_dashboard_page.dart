@@ -6,6 +6,7 @@ import '../cubit/cluster_cubit.dart';
 import '../widgets/kv_control_bar.dart';
 import '../widgets/lock_panel.dart';
 import '../widgets/node_card.dart';
+import '../widgets/sharding_panel.dart';
 import '../widgets/txn_panel.dart';
 import '../widgets/vector_clock_panel.dart';
 
@@ -78,29 +79,24 @@ class ClusterDashboardPage extends StatelessWidget {
               );
             }
             final cubit = context.read<ClusterCubit>();
-            return Column(
-              children: [
-                if (state.isPartitioned)
-                  Container(
-                    width: double.infinity,
-                    color: Colors.amber.withValues(alpha: 0.25),
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      '⚡ Network Partitioned — الأقلية متجمّدة، والأغلبية فقط تثبّت الكتابة (Split-Brain protection)',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.w600),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (state.isPartitioned)
+                    Container(
+                      width: double.infinity,
+                      color: Colors.amber.withValues(alpha: 0.25),
+                      padding: const EdgeInsets.all(10),
+                      child: const Text(
+                        '⚡ Network Partitioned — الأقلية متجمّدة، والأغلبية فقط تثبّت الكتابة (Split-Brain protection)',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
-                  ),
-                const KvControlBar(),
-                const SizedBox(height: 8),
-                const LockPanel(),
-                const SizedBox(height: 8),
-                const TxnPanel(),
-                const SizedBox(height: 8),
-                const VectorClockPanel(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
+                  const SizedBox(height: 8),
+                  // بطاقات العُقَد.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Wrap(
                       spacing: 16,
                       runSpacing: 16,
@@ -116,8 +112,19 @@ class ClusterDashboardPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  // لوحات التحكّم بالمفاهيم.
+                  const KvControlBar(),
+                  const SizedBox(height: 8),
+                  const LockPanel(),
+                  const SizedBox(height: 8),
+                  const TxnPanel(),
+                  const SizedBox(height: 8),
+                  const VectorClockPanel(),
+                  const SizedBox(height: 8),
+                  const ShardingPanel(),
+                ],
+              ),
             );
           },
         ),
