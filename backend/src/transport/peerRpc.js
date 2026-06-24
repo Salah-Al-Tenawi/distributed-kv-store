@@ -36,6 +36,8 @@ async function postToPeer(peer, path, body, timeoutMs = 120) {
   }
 }
 
+const { participantVote } = require('../node/twoPhaseCommit');
+
 /** عميل لإرسال رسائل RPC من هذه العقدة إلى أقرانها (peers). */
 class PeerClient {
   sendRequestVote(peer, args) {
@@ -44,6 +46,10 @@ class PeerClient {
 
   sendAppendEntries(peer, args) {
     return postToPeer(peer, '/rpc/append-entries', args);
+  }
+
+  send2pcPrepare(peer, args) {
+    return postToPeer(peer, '/rpc/2pc-prepare', args);
   }
 }
 
@@ -65,6 +71,11 @@ function registerPeerRoutes(app, election) {
 
   app.post('/rpc/append-entries', dropIfDead, (req, res) => {
     res.json(election.handleAppendEntries(req.body));
+  });
+
+  // 2PC: المشارك يصوّت على المعاملة (Prepare phase).
+  app.post('/rpc/2pc-prepare', dropIfDead, (req, res) => {
+    res.json({ vote: participantVote(election.node) });
   });
 }
 

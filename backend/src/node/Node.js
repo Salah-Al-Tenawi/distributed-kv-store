@@ -46,6 +46,10 @@ class Node {
     // lockName → { owner, token (Fencing Token), expiresAt (TTL) }
     this.locks = {};
 
+    // الالتزام ثنائي الطور (Two-Phase Commit / 2PC):
+    this.voteAbort = false;          // محاكاة: هذه العقدة ستصوّت ABORT (رفض)
+    this.lastTxn = null;             // آخر معاملة: { id, operations, votes, result }
+
     // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
     // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.
     this.onStateChange = () => {};
@@ -68,6 +72,8 @@ class Node {
       commitIndex: this.commitIndex,   // مؤشّر آخر مدخلة مثبّتة
       blockedPeers: [...this.blockedPeers], // الأقران المحجوبون (عند انقسام الشبكة)
       locks: this.locks,               // الأقفال الموزّعة (owner/token/expiresAt)
+      voteAbort: this.voteAbort,       // هل ستصوّت هذه العقدة ABORT في 2PC؟
+      lastTxn: this.lastTxn,           // آخر معاملة 2PC (للعرض على اللوحة)
       timestamp: Date.now(),
     };
   }

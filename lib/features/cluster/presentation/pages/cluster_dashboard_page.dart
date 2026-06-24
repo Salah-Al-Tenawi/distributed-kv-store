@@ -6,6 +6,7 @@ import '../cubit/cluster_cubit.dart';
 import '../widgets/kv_control_bar.dart';
 import '../widgets/lock_panel.dart';
 import '../widgets/node_card.dart';
+import '../widgets/txn_panel.dart';
 
 /// شاشة لوحة التحكّم: تعرض كل عُقَد العنقود وحالتها لحظياً.
 class ClusterDashboardPage extends StatelessWidget {
@@ -92,6 +93,8 @@ class ClusterDashboardPage extends StatelessWidget {
                 const KvControlBar(),
                 const SizedBox(height: 8),
                 const LockPanel(),
+                const SizedBox(height: 8),
+                const TxnPanel(),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(24),

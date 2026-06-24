@@ -105,6 +105,17 @@ class ClusterRemoteDataSource {
   /// يزيل الحجب عن عقدة (شفاء الشبكة / POST /admin/heal).
   Future<void> healNode(int port) => _post(port, '/admin/heal');
 
+  /// يشغّل معاملة 2PC على القائد (POST /txn).
+  Future<void> runTransaction(
+    int leaderPort,
+    List<Map<String, String>> operations,
+  ) =>
+      _post(leaderPort, '/txn', {'operations': operations});
+
+  /// يجعل عقدة تصوّت ABORT في 2PC أو يلغي ذلك (POST /admin/vote-abort).
+  Future<void> setVoteAbort(int port, bool value) =>
+      _post(port, '/admin/vote-abort', {'value': value});
+
   Future<void> dispose() async {
     for (final sub in _subscriptions) {
       await sub.cancel();

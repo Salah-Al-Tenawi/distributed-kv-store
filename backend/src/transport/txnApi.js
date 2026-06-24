@@ -1,0 +1,32 @@
+// =============================================================
+// txnApi.js — واجهة المعاملات الموزّعة (2PC Transaction API)
+// =============================================================
+//   POST /txn { operations: [{ key, value }] }  → يشغّل معاملة 2PC (القائد فقط)
+//
+// القائد (Leader) يعمل منسّقاً (Coordinator): ينفّذ الطورين ويعيد النتيجة
+// (COMMITTED / ABORTED) مع أصوات كل عقدة.
+
+const { NodeState } = require('../node/states');
+const { runTransaction } = require('../node/twoPhaseCommit');
+
+function registerTxnRoutes(app, node, election) {
+  app.post('/txn', async (req, res) => {
+    if (node.state !== NodeState.LEADER) {
+      return res.status(409).json({ ok: false, leaderId: node.leaderId });
+    }
+    const operations = Array.isArray(req.body?.operations) ? req.body.operations : [];
+    if (operations.length === 0) {
+      return res.status(400).json({ ok: false, error: 'operations required' });
+    }
+    const result = await runTransaction(
+      node,
+      election.rpc,
+      election.peers,
+      election,
+      operations,
+    );
+    res.json({ ok: true, ...result });
+  });
+}
+
+module.exports = { registerTxnRoutes };

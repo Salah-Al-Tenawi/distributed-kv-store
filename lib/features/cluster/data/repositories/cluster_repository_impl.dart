@@ -45,4 +45,15 @@ class ClusterRepositoryImpl implements ClusterRepository {
   @override
   Future<void> releaseLock(int leaderPort, String lockName, String clientId) =>
       remoteDataSource.releaseLock(leaderPort, lockName, clientId);
+
+  @override
+  Future<void> runTransaction(
+    int leaderPort,
+    List<Map<String, String>> operations,
+  ) =>
+      remoteDataSource.runTransaction(leaderPort, operations);
+
+  @override
+  Future<void> setVoteAbort(int port, bool value) =>
+      remoteDataSource.setVoteAbort(port, value);
 }

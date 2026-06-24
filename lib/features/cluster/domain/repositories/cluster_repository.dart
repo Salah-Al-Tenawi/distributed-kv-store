@@ -38,4 +38,13 @@ abstract class ClusterRepository {
 
   /// تحرير قفل موزّع على القائد.
   Future<void> releaseLock(int leaderPort, String lockName, String clientId);
+
+  /// يشغّل معاملة 2PC على القائد.
+  Future<void> runTransaction(
+    int leaderPort,
+    List<Map<String, String>> operations,
+  );
+
+  /// يجعل عقدة تصوّت ABORT في 2PC (محاكاة رفض) أو يلغي ذلك.
+  Future<void> setVoteAbort(int port, bool value);
 }

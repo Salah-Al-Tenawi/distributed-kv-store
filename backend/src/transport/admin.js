@@ -31,6 +31,13 @@ function registerAdminRoutes(app, election) {
     election.heal();
     res.json({ ok: true });
   });
+
+  // 2PC: جعل العقدة تصوّت ABORT (محاكاة تعارض موارد) أو إلغاء ذلك.
+  app.post('/admin/vote-abort', (req, res) => {
+    election.node.voteAbort = req.body?.value === true;
+    election.node.notifyChange();
+    res.json({ ok: true, voteAbort: election.node.voteAbort });
+  });
 }
 
 module.exports = { registerAdminRoutes };

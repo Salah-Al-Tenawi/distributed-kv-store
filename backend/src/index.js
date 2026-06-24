@@ -15,6 +15,7 @@ const { PeerClient, registerPeerRoutes } = require('./transport/peerRpc');
 const { registerAdminRoutes } = require('./transport/admin');
 const { registerClientRoutes } = require('./transport/clientApi');
 const { registerLockRoutes } = require('./transport/lockApi');
+const { registerTxnRoutes } = require('./transport/txnApi');
 
 // نقرأ معرّف العقدة من سطر الأوامر (args)، أو نستخدم node-1 افتراضياً.
 const nodeId = process.argv[2] || 'node-1';
@@ -39,6 +40,7 @@ registerPeerRoutes(app, election);
 registerAdminRoutes(app, election);
 registerClientRoutes(app, node, election);
 registerLockRoutes(app, node, election);
+registerTxnRoutes(app, node, election);
 
 // 4) نبدأ الانتخاب: العقدة تبدأ تابعاً، وإن لم تسمع قائداً تترشّح.
 //    مهلة بسيطة لإعطاء كل العُقَد فرصة للإقلاع قبل بدء الانتخابات.

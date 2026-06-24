@@ -110,6 +110,16 @@ class ClusterCubit extends Cubit<ClusterState> {
     if (port != null) await releaseLock(port, lockName, clientId);
   }
 
+  /// يشغّل معاملة 2PC على القائد (مجموعة عمليات ذرّية).
+  Future<void> runTransaction(List<Map<String, String>> operations) async {
+    final port = state.leaderPort;
+    if (port != null) await repository.runTransaction(port, operations);
+  }
+
+  /// يبدّل تصويت عقدة على ABORT في 2PC (لمحاكاة الرفض).
+  Future<void> toggleVoteAbort(int port, bool value) =>
+      repository.setVoteAbort(port, value);
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();
