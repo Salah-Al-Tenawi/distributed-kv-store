@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "node": "node src/index.js",
-    "cluster": "node scripts/start-cluster.js"
+    "cluster": "node scripts/start-cluster.js",
+    "start": "node src/gateway.js",
+    "gateway": "node src/gateway.js"
   },
   "dependencies": {
     "express": "^4.19.2",

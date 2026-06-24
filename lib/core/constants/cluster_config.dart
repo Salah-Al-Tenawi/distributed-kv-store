@@ -1,14 +1,33 @@
 /// إعدادات العنقود من جهة Flutter — يجب أن تطابق backend/src/config.js
 ///
-/// كل عقدة تعمل على منفذ، ونتصل بها عبر WebSocket على نفس المنفذ.
-/// ملاحظة: على المحاكي (Android emulator) العنوان 10.0.2.2 يشير للجهاز
-/// المضيف؛ على الويب/سطح المكتب نستخدم localhost.
+/// وضعان للتشغيل:
+///  - **محلّي (Local dev):** كل عقدة على منفذها مباشرةً (localhost:4001..4005).
+///  - **بوّابة (Gateway):** خدمة واحدة عامة تخدم الواجهة وتوجّه عبر مسارات
+///    `/ws/:port` و `/proxy/:port` على نفس الأصل (origin). نُفعّله للنشر بـ:
+///       flutter build web --dart-define=GATEWAY=true
 class ClusterConfig {
-  static const String host = 'localhost';
+  /// عند true نستخدم البوّابة (نفس أصل الصفحة)؛ نُمرّره وقت بناء النشر.
+  static const bool gateway = bool.fromEnvironment('GATEWAY', defaultValue: false);
+
+  /// عنوان التطوير المحلّي (يُستخدم خارج وضع البوّابة).
+  static const String _devHost = 'localhost';
 
   static const List<int> nodePorts = [4001, 4002, 4003, 4004, 4005];
 
-  static String wsUrl(int port) => 'ws://$host:$port';
+  /// أصل الصفحة الحالي (للويب في وضع البوّابة): host[:port].
+  static String get _origin {
+    final b = Uri.base;
+    return b.hasPort ? '${b.host}:${b.port}' : b.host;
+  }
 
-  static String httpUrl(int port) => 'http://$host:$port';
+  /// مخطّط WebSocket حسب أمان الصفحة (wss على https).
+  static String get _wsScheme => Uri.base.scheme == 'https' ? 'wss' : 'ws';
+
+  static String wsUrl(int port) => gateway
+      ? '$_wsScheme://$_origin/ws/$port'
+      : 'ws://$_devHost:$port';
+
+  static String httpUrl(int port) => gateway
+      ? '${Uri.base.scheme}://$_origin/proxy/$port'
+      : 'http://$_devHost:$port';
 }
