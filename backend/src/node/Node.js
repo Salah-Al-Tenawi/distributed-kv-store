@@ -9,6 +9,7 @@
 //   ... إلخ
 
 const { NodeState } = require('./states');
+const { CLUSTER } = require('../config');
 
 class Node {
   /**
@@ -50,6 +51,10 @@ class Node {
     this.voteAbort = false;          // محاكاة: هذه العقدة ستصوّت ABORT (رفض)
     this.lastTxn = null;             // آخر معاملة: { id, operations, votes, result }
 
+    // الساعات الشعاعية (Vector Clock): عدّاد لكل عقدة، يبدأ من صفر.
+    this.vectorClock = {};
+    for (const member of CLUSTER) this.vectorClock[member.id] = 0;
+
     // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
     // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.
     this.onStateChange = () => {};
@@ -74,6 +79,7 @@ class Node {
       locks: this.locks,               // الأقفال الموزّعة (owner/token/expiresAt)
       voteAbort: this.voteAbort,       // هل ستصوّت هذه العقدة ABORT في 2PC؟
       lastTxn: this.lastTxn,           // آخر معاملة 2PC (للعرض على اللوحة)
+      vectorClock: this.vectorClock,   // الساعة الشعاعية (Vector Clock)
       timestamp: Date.now(),
     };
   }

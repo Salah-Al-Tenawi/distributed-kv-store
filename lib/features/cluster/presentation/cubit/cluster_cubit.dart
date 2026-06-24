@@ -120,6 +120,13 @@ class ClusterCubit extends Cubit<ClusterState> {
   Future<void> toggleVoteAbort(int port, bool value) =>
       repository.setVoteAbort(port, value);
 
+  /// حدث محلّي على عقدة (يزيد ساعتها الشعاعية).
+  Future<void> vcEvent(int port) => repository.vcEvent(port);
+
+  /// رسالة سببية من عقدة إلى أخرى (دمج الساعات).
+  Future<void> vcSend(int fromPort, String toId) =>
+      repository.vcSend(fromPort, toId);
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();

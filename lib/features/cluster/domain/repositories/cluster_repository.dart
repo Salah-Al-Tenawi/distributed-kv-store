@@ -47,4 +47,10 @@ abstract class ClusterRepository {
 
   /// يجعل عقدة تصوّت ABORT في 2PC (محاكاة رفض) أو يلغي ذلك.
   Future<void> setVoteAbort(int port, bool value);
+
+  /// حدث محلّي على عقدة (يزيد ساعتها الشعاعية).
+  Future<void> vcEvent(int port);
+
+  /// رسالة سببية من عقدة إلى أخرى.
+  Future<void> vcSend(int fromPort, String toId);
 }

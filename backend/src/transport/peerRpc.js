@@ -51,6 +51,10 @@ class PeerClient {
   send2pcPrepare(peer, args) {
     return postToPeer(peer, '/rpc/2pc-prepare', args);
   }
+
+  sendVcMerge(peer, args) {
+    return postToPeer(peer, '/rpc/vc-merge', args);
+  }
 }
 
 /**

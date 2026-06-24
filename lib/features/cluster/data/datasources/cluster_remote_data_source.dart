@@ -116,6 +116,13 @@ class ClusterRemoteDataSource {
   Future<void> setVoteAbort(int port, bool value) =>
       _post(port, '/admin/vote-abort', {'value': value});
 
+  /// حدث محلّي على عقدة (يزيد ساعتها الشعاعية / POST /vc/event).
+  Future<void> vcEvent(int port) => _post(port, '/vc/event');
+
+  /// رسالة سببية من عقدة إلى أخرى (POST /vc/send).
+  Future<void> vcSend(int fromPort, String toId) =>
+      _post(fromPort, '/vc/send', {'to': toId});
+
   Future<void> dispose() async {
     for (final sub in _subscriptions) {
       await sub.cancel();

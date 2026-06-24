@@ -7,6 +7,7 @@ import '../widgets/kv_control_bar.dart';
 import '../widgets/lock_panel.dart';
 import '../widgets/node_card.dart';
 import '../widgets/txn_panel.dart';
+import '../widgets/vector_clock_panel.dart';
 
 /// شاشة لوحة التحكّم: تعرض كل عُقَد العنقود وحالتها لحظياً.
 class ClusterDashboardPage extends StatelessWidget {
@@ -95,6 +96,8 @@ class ClusterDashboardPage extends StatelessWidget {
                 const LockPanel(),
                 const SizedBox(height: 8),
                 const TxnPanel(),
+                const SizedBox(height: 8),
+                const VectorClockPanel(),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(24),

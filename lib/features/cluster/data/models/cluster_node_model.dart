@@ -23,6 +23,7 @@ class ClusterNodeModel extends ClusterNode {
     super.locks,
     super.voteAbort,
     super.lastTxn,
+    super.vectorClock,
   });
 
   factory ClusterNodeModel.fromJson(Map<String, dynamic> json) {
@@ -53,6 +54,10 @@ class ClusterNodeModel extends ClusterNode {
       lastTxn: json['lastTxn'] == null
           ? null
           : TxnInfo.fromJson(json['lastTxn'] as Map<String, dynamic>),
+      vectorClock: (json['vectorClock'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(k, (v as num).toInt()),
+          ) ??
+          const {},
     );
   }
 

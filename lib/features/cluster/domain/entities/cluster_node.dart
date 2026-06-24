@@ -42,6 +42,9 @@ class ClusterNode extends Equatable {
   /// نتيجة آخر معاملة 2PC (متاحة على القائد فقط).
   final TxnInfo? lastTxn;
 
+  /// الساعة الشعاعية (Vector Clock): معرّف العقدة → عدّاد.
+  final Map<String, int> vectorClock;
+
   const ClusterNode({
     required this.id,
     required this.port,
@@ -57,6 +60,7 @@ class ClusterNode extends Equatable {
     this.locks = const {},
     this.voteAbort = false,
     this.lastTxn,
+    this.vectorClock = const {},
   });
 
   bool get isLeader => role == NodeRole.leader;
@@ -80,5 +84,6 @@ class ClusterNode extends Equatable {
         locks,
         voteAbort,
         lastTxn,
+        vectorClock,
       ];
 }

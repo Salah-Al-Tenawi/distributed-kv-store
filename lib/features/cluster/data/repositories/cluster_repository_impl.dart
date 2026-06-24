@@ -56,4 +56,11 @@ class ClusterRepositoryImpl implements ClusterRepository {
   @override
   Future<void> setVoteAbort(int port, bool value) =>
       remoteDataSource.setVoteAbort(port, value);
+
+  @override
+  Future<void> vcEvent(int port) => remoteDataSource.vcEvent(port);
+
+  @override
+  Future<void> vcSend(int fromPort, String toId) =>
+      remoteDataSource.vcSend(fromPort, toId);
 }
