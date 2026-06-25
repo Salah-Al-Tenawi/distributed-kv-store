@@ -44,6 +44,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# ملفات الشرح المحلية (لا تُرفع)
+*.docx
+
 # Node.js (backend)
 node_modules/
 npm-debug.log*
