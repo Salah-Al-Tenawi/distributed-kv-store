@@ -15,20 +15,19 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
 const { WebSocketServer, WebSocket } = require('ws');
 const { CLUSTER } = require('./config');
+const { startNode } = require('./startNode');
 
 const PUBLIC_PORT = process.env.PORT || 8080;
-const indexPath = path.join(__dirname, 'index.js');
 const publicDir = path.join(__dirname, '..', 'public'); // ناتج flutter build web
 
-// --- 1) تشغيل العُقَد الخمسة كعمليات فرعية ---
-const children = [];
+// --- 1) تشغيل العُقَد الخمسة داخل نفس العملية (in-process) ---
+// أخفّ بكثير من تشغيل 5 عمليات منفصلة، ويعمل على أي استضافة (بلا spawn).
 for (const node of CLUSTER) {
-  children.push(spawn('node', [indexPath, node.id], { stdio: 'inherit' }));
+  startNode(node);
 }
-console.log(`🚀 البوّابة شغّلت ${CLUSTER.length} عُقَد داخلياً.`);
+console.log(`🚀 البوّابة شغّلت ${CLUSTER.length} عُقَد داخلياً (in-process).`);
 
 const app = express();
 app.use(express.json());
@@ -95,12 +94,6 @@ server.listen(PUBLIC_PORT, () => {
   console.log(`   الواجهة:  http://localhost:${PUBLIC_PORT}/`);
 });
 
-// إيقاف نظيف للعُقَد عند إيقاف البوّابة.
-process.on('SIGINT', () => {
-  for (const child of children) child.kill('SIGINT');
-  process.exit(0);
-});
-process.on('SIGTERM', () => {
-  for (const child of children) child.kill('SIGTERM');
-  process.exit(0);
-});
+// العُقَد تعمل داخل نفس العملية، فتتوقّف معها تلقائياً.
+process.on('SIGINT', () => process.exit(0));
+process.on('SIGTERM', () => process.exit(0));
