@@ -15,6 +15,8 @@ start "KV Gateway" cmd /k "npm start"
 echo بانتظار اقلاع البوابة...
 timeout /t 6 /nobreak >nul
 
-echo [2/2] فتح النفق العام (انتظر ظهور رابط trycloudflare.com بالاسفل)...
+echo [2/2] فتح النفق العام...
+echo     ابحث عن الرابط داخل الصندوق ادناه: https://xxxx.trycloudflare.com
 echo.
-"%USERPROFILE%\cloudflared.exe" tunnel --url http://localhost:8080
+REM --protocol http2 يتجنب اخطاء QUIC/UDP على الشبكات التي تحجبها
+"%USERPROFILE%\cloudflared.exe" tunnel --url http://localhost:8080 --protocol http2 --no-autoupdate
