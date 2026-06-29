@@ -1,6 +1,5 @@
 import '../repositories/cluster_repository.dart';
 
-/// Use Case: إحياء عقدة بعد قتلها.
 class ReviveNode {
   final ClusterRepository repository;
 

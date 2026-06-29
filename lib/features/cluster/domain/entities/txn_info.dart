@@ -1,8 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// نتيجة آخر معاملة 2PC (Two-Phase Commit):
-/// - [votes]: صوت كل عقدة (YES / NO).
-/// - [result]: النتيجة النهائية (COMMITTED / ABORTED).
 class TxnInfo extends Equatable {
   final String id;
   final Map<String, String> votes;

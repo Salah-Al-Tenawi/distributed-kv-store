@@ -4,13 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/util/consistent_hash_ring.dart';
 import '../cubit/cluster_cubit.dart';
 
-/// لوحة التجزئة المتّسقة (Consistent Hashing / Sharding):
-/// تعرض على أي عقدة يقع كل مفتاح حسب حلقة التجزئة المبنيّة من العُقَد الحيّة.
-/// عند قتل عقدة (من بطاقتها) تتقلّص الحلقة وتنتقل مفاتيحها فقط.
 class ShardingPanel extends StatefulWidget {
   const ShardingPanel({super.key});
 
-  // مفاتيح تجريبية لتوضيح التوزيع.
   static const List<String> sampleKeys = [
     'user-1', 'user-2', 'user-3', 'user-4', 'cart-9', 'cart-7',
     'order-42', 'order-88', 'photo-x', 'photo-y', 'session-a', 'session-b',
@@ -34,14 +30,13 @@ class _ShardingPanelState extends State<ShardingPanel> {
   Widget build(BuildContext context) {
     return BlocBuilder<ClusterCubit, ClusterState>(
       builder: (context, state) {
-        // الحلقة تُبنى من العُقَد الحيّة فقط (قتل عقدة يُخرجها من الحلقة).
+
         final liveIds = state.sortedNodes
             .where((n) => !state.isOffline(n))
             .map((n) => n.id)
             .toList();
         final ring = ConsistentHashRing(liveIds);
 
-        // نوزّع المفاتيح التجريبية على العُقَد.
         final byNode = <String, List<String>>{for (final id in liveIds) id: []};
         for (final key in ShardingPanel.sampleKeys) {
           final owner = ring.owner(key);
@@ -71,7 +66,7 @@ class _ShardingPanelState extends State<ShardingPanel> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // توزيع المفاتيح التجريبية لكل عقدة.
+
                 Wrap(
                   spacing: 12,
                   runSpacing: 8,
@@ -104,7 +99,7 @@ class _ShardingPanelState extends State<ShardingPanel> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                // اختبار مفتاح حرّ.
+
                 Row(
                   children: [
                     SizedBox(

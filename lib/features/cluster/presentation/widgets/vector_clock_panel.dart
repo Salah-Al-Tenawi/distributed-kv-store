@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/cluster_node.dart';
 import '../cubit/cluster_cubit.dart';
 
-/// لوحة الساعات الشعاعية (Vector Clocks): تعرض ساعة كل عقدة،
-/// وتتيح توليد حدث محلّي أو إرسال رسالة سببية بين عقدتين.
 class VectorClockPanel extends StatefulWidget {
   const VectorClockPanel({super.key});
 
@@ -17,7 +15,6 @@ class _VectorClockPanelState extends State<VectorClockPanel> {
   String? _from;
   String? _to;
 
-  /// يحوّل خريطة الساعة إلى نصّ مرتّب مثل [1,0,2,0,0].
   String _format(ClusterNode node, List<String> ids) {
     final values = ids.map((id) => node.vectorClock[id] ?? 0).join(', ');
     return '[$values]';
@@ -56,7 +53,7 @@ class _VectorClockPanelState extends State<VectorClockPanel> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // ساعة كل عقدة + زر حدث محلّي.
+
                 Wrap(
                   spacing: 12,
                   runSpacing: 8,
@@ -92,7 +89,7 @@ class _VectorClockPanelState extends State<VectorClockPanel> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // إرسال رسالة سببية من عقدة إلى أخرى.
+
                 Row(
                   children: [
                     const Text('Send message: '),

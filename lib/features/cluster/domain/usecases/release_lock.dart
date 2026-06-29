@@ -1,6 +1,5 @@
 import '../repositories/cluster_repository.dart';
 
-/// Use Case: تحرير قفل موزّع (يُرسَل للقائد).
 class ReleaseLock {
   final ClusterRepository repository;
 

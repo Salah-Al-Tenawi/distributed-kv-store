@@ -1,6 +1,5 @@
 import '../repositories/cluster_repository.dart';
 
-/// Use Case: كتابة/تحديث مفتاح في المخزن (يُرسَل للقائد).
 class PutKey {
   final ClusterRepository repository;
 

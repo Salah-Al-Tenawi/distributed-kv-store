@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/cluster_cubit.dart';
 
-/// شريط كتابة المفاتيح (PUT) — يُرسل الأمر إلى القائد الحالي فقط.
 class KvControlBar extends StatefulWidget {
   const KvControlBar({super.key});
 
@@ -75,7 +74,7 @@ class _KvControlBarState extends State<KvControlBar> {
                   label: const Text('PUT'),
                 ),
                 const SizedBox(width: 12),
-                // مؤشّر القائد الذي ستُرسَل إليه الكتابة.
+
                 Text(
                   hasLeader ? 'Leader: ${leader.id}' : 'No leader (write blocked)',
                   style: TextStyle(

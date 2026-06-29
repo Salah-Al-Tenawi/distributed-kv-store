@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../domain/entities/cluster_node.dart';
 
-/// بطاقة تعرض حالة عقدة واحدة. اللون يعكس الدور:
-/// أخضر = Leader، أزرق = Follower، برتقالي = Candidate، رمادي = Offline.
 class NodeCard extends StatelessWidget {
   final ClusterNode node;
   final bool isOffline;
@@ -45,7 +43,7 @@ class NodeCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // مؤشّر النبض (Heartbeat): قلب نابض أخضر للحيّة، رمادي للميتة.
+
           _Heartbeat(active: !isOffline, color: _roleColor),
           const SizedBox(height: 8),
           Icon(
@@ -76,10 +74,10 @@ class NodeCard extends StatelessWidget {
               style: const TextStyle(fontSize: 11, color: Colors.green),
             ),
           const SizedBox(height: 8),
-          // المخزن المثبّت (Committed KV store) لهذه العقدة.
+
           _KvBox(kv: node.kv),
           const SizedBox(height: 10),
-          // زر القتل/الإحياء (Kill / Revive).
+
           SizedBox(
             width: double.infinity,
             child: isOffline
@@ -106,7 +104,6 @@ class NodeCard extends StatelessWidget {
   }
 }
 
-/// صندوق يعرض محتوى المخزن (Committed key-value store) للعقدة.
 class _KvBox extends StatelessWidget {
   final Map<String, String> kv;
 
@@ -148,7 +145,6 @@ class _KvBox extends StatelessWidget {
   }
 }
 
-/// قلب نابض بسيط (Heartbeat indicator): يكبر ويصغر عندما تكون العقدة حيّة.
 class _Heartbeat extends StatefulWidget {
   final bool active;
   final Color color;

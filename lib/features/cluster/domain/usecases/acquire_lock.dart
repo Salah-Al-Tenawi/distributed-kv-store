@@ -1,6 +1,5 @@
 import '../repositories/cluster_repository.dart';
 
-/// Use Case: طلب قفل موزّع (يُرسَل للقائد).
 class AcquireLock {
   final ClusterRepository repository;
 

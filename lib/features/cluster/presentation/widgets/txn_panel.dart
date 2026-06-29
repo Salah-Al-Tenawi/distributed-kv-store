@@ -3,13 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/cluster_cubit.dart';
 
-/// لوحة المعاملات الموزّعة (Two-Phase Commit / 2PC):
-/// زرّ لتشغيل معاملة ذرّية + عرض أصوات العُقَد والنتيجة،
-/// ومفاتيح لإجبار عقدة على التصويت ABORT (لمحاكاة الرفض).
 class TxnPanel extends StatelessWidget {
   const TxnPanel({super.key});
 
-  // معاملة ذرّية تجريبية: تعيين مفتاحين معاً (الكل أو لا شيء).
   static const List<Map<String, String>> _demoTxn = [
     {'key': 'A', 'value': '100'},
     {'key': 'B', 'value': '200'},
@@ -53,7 +49,7 @@ class TxnPanel extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // نتيجة آخر معاملة + أصوات العُقَد.
+
                 if (txn != null) ...[
                   Row(
                     children: [
@@ -92,7 +88,7 @@ class TxnPanel extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                 ],
-                // مفاتيح إجبار التصويت بالرفض (محاكاة).
+
                 const Text('محاكاة رفض عقدة (vote ABORT):',
                     style: TextStyle(fontSize: 12, color: Colors.grey)),
                 Wrap(

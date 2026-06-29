@@ -1,68 +1,41 @@
-// =============================================================
-// Node.js — الكلاس الرئيسي لعقدة واحدة في العنقود
-// =============================================================
-// هذا الكلاس يحمل "حالة" العقدة. في Phase 0 الحالة بسيطة جداً
-// (المعرّف + الدور + الدورة). سنضيف عليها تدريجياً مع كل تاسك:
-//   - تاسك 1: منطق الانتخاب
-//   - تاسك 2: النبضات وكشف الأعطال
-//   - تاسك 3: السجلّ (log) والبيانات (kv store)
-//   ... إلخ
-
 const { NodeState } = require('./states');
 const { CLUSTER } = require('../config');
 
 class Node {
-  /**
-   * @param {string} id   معرّف العقدة، مثل 'node-1'
-   * @param {number} port المنفذ الذي تعمل عليه
-   */
+
   constructor(id, port) {
     this.id = id;
     this.port = port;
 
-    // الحالة الأساسية (Core state):
-    this.state = NodeState.FOLLOWER; // كل عقدة تبدأ كتابع (Follower)
-    this.term = 0;                   // الدورة (Term) — عدّاد منطقي للانتخابات
-    this.leaderId = null;            // من هو القائد الحالي (Leader)؟ لا نعرف بعد
+    this.state = NodeState.FOLLOWER;
+    this.term = 0;
+    this.leaderId = null;
 
-    // حالة الانتخاب (Election state):
-    this.votedFor = null;            // لمن صوّتنا في الدورة (Term) الحالية
-    this.votesReceived = 0;          // كم صوتاً جمعنا (عندما نكون مرشّحاً Candidate)
+    this.votedFor = null;
+    this.votesReceived = 0;
 
-    // كشف الأعطال (Failure Detection state):
-    this.alive = true;               // هل العقدة حيّة؟ "قتلها" يجعلها false (محاكاة Crash)
-    this.suspectedOffline = [];       // قائمة الأقران الذين يشكّ القائد (Leader) بموتهم
+    this.alive = true;
+    this.suspectedOffline = [];
 
-    // انقسام الشبكة (Network Partition): أقران لا نتواصل معهم (محاكاة انقطاع).
     this.blockedPeers = new Set();
 
-    // نسخ البيانات (Replication state):
-    this.log = [];                   // السجلّ (Log): مصفوفة المدخلات {term, op, key, value}
-    this.commitIndex = -1;           // أعلى مؤشّر مدخلة "مثبّتة" (Committed) — نُسخت لأغلبية
-    this.lastApplied = -1;           // أعلى مؤشّر مدخلة طُبّقت فعلاً على المخزن (kv)
-    this.kv = {};                    // المخزن الفعلي (State Machine): مفتاح → قيمة
-    this.matchIndex = {};            // (للقائد) آخر مؤشّر نسخه كل قرين — لحساب الأغلبية
+    this.log = [];
+    this.commitIndex = -1;
+    this.lastApplied = -1;
+    this.kv = {};
+    this.matchIndex = {};
 
-    // الأقفال الموزّعة (Distributed Locks):
-    // lockName → { owner, token (Fencing Token), expiresAt (TTL) }
     this.locks = {};
 
-    // الالتزام ثنائي الطور (Two-Phase Commit / 2PC):
-    this.voteAbort = false;          // محاكاة: هذه العقدة ستصوّت ABORT (رفض)
-    this.lastTxn = null;             // آخر معاملة: { id, operations, votes, result }
+    this.voteAbort = false;
+    this.lastTxn = null;
 
-    // الساعات الشعاعية (Vector Clock): عدّاد لكل عقدة، يبدأ من صفر.
     this.vectorClock = {};
     for (const member of CLUSTER) this.vectorClock[member.id] = 0;
 
-    // دالة تُستدعى عند أي تغيّر في الحالة، لنبثّها للوحة Flutter.
-    // يحقنها transport لاحقاً. الافتراضي: لا تفعل شيئاً.
     this.onStateChange = () => {};
   }
 
-  /**
-   * يُرجع صورة (snapshot) من حالة العقدة — هذا ما نرسله للوحة Flutter.
-   */
   getSnapshot() {
     return {
       id: this.id,
@@ -70,23 +43,20 @@ class Node {
       state: this.state,
       term: this.term,
       leaderId: this.leaderId,
-      online: this.alive,              // false عند "قتل" العقدة (محاكاة Crash)
-      suspectedOffline: this.suspectedOffline, // من يشكّ القائد بموتهم
-      kv: this.kv,                     // المخزن المثبّت (Committed key-value)
-      logLength: this.log.length,      // عدد المدخلات في السجلّ
-      commitIndex: this.commitIndex,   // مؤشّر آخر مدخلة مثبّتة
-      blockedPeers: [...this.blockedPeers], // الأقران المحجوبون (عند انقسام الشبكة)
-      locks: this.locks,               // الأقفال الموزّعة (owner/token/expiresAt)
-      voteAbort: this.voteAbort,       // هل ستصوّت هذه العقدة ABORT في 2PC؟
-      lastTxn: this.lastTxn,           // آخر معاملة 2PC (للعرض على اللوحة)
-      vectorClock: this.vectorClock,   // الساعة الشعاعية (Vector Clock)
+      online: this.alive,
+      suspectedOffline: this.suspectedOffline,
+      kv: this.kv,
+      logLength: this.log.length,
+      commitIndex: this.commitIndex,
+      blockedPeers: [...this.blockedPeers],
+      locks: this.locks,
+      voteAbort: this.voteAbort,
+      lastTxn: this.lastTxn,
+      vectorClock: this.vectorClock,
       timestamp: Date.now(),
     };
   }
 
-  /**
-   * تُستدعى عند أي تغيير داخلي لإعلام المشتركين (Flutter).
-   */
   notifyChange() {
     this.onStateChange(this.getSnapshot());
   }

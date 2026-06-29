@@ -2,11 +2,6 @@ import '../../domain/entities/cluster_node.dart';
 import '../../domain/entities/lock_info.dart';
 import '../../domain/entities/txn_info.dart';
 
-/// نموذج البيانات (Model): يرث من الكيان ويضيف التحويل من/إلى JSON.
-///
-/// JSON يأتي من الـ backend (dashboard.js -> getSnapshot) بهذا الشكل:
-/// { "id": "node-1", "port": 4001, "state": "FOLLOWER",
-///   "term": 0, "leaderId": null, "online": true }
 class ClusterNodeModel extends ClusterNode {
   const ClusterNodeModel({
     required super.id,

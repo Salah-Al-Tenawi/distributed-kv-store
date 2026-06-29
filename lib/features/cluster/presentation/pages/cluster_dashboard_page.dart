@@ -10,7 +10,6 @@ import '../widgets/sharding_panel.dart';
 import '../widgets/txn_panel.dart';
 import '../widgets/vector_clock_panel.dart';
 
-/// شاشة لوحة التحكّم: تعرض كل عُقَد العنقود وحالتها لحظياً.
 class ClusterDashboardPage extends StatelessWidget {
   const ClusterDashboardPage({super.key});
 
@@ -22,7 +21,7 @@ class ClusterDashboardPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Distributed KV Store — Cluster'),
           actions: [
-            // زر تقسيم/شفاء الشبكة (Network Partition / Heal).
+
             BlocBuilder<ClusterCubit, ClusterState>(
               builder: (context, state) {
                 final cubit = context.read<ClusterCubit>();
@@ -94,7 +93,7 @@ class ClusterDashboardPage extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 8),
-                  // بطاقات العُقَد.
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Wrap(
@@ -113,7 +112,7 @@ class ClusterDashboardPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // لوحات التحكّم بالمفاهيم.
+
                   const KvControlBar(),
                   const SizedBox(height: 8),
                   const LockPanel(),

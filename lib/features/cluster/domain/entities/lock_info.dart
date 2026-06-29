@@ -1,9 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// معلومات قفل موزّع (Distributed Lock):
-/// - [owner]: مالك القفل حالياً (null = حرّ / free).
-/// - [token]: رمز الحماية (Fencing Token) المتزايد.
-/// - [expiresAt]: لحظة انتهاء المهلة (TTL) بالميلي ثانية (epoch).
 class LockInfo extends Equatable {
   final String? owner;
   final int token;
@@ -15,11 +11,9 @@ class LockInfo extends Equatable {
     required this.expiresAt,
   });
 
-  /// هل القفل مشغول الآن؟ (له مالك ولم تنتهِ مهلته).
   bool get isHeld =>
       owner != null && expiresAt > DateTime.now().millisecondsSinceEpoch;
 
-  /// الثواني المتبقية قبل انتهاء المهلة (TTL).
   int get secondsLeft {
     final ms = expiresAt - DateTime.now().millisecondsSinceEpoch;
     return ms > 0 ? (ms / 1000).ceil() : 0;

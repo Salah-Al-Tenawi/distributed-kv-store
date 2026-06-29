@@ -1,6 +1,5 @@
 import '../repositories/cluster_repository.dart';
 
-/// Use Case: حذف مفتاح من المخزن (يُرسَل للقائد).
 class DeleteKey {
   final ClusterRepository repository;
 

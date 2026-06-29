@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/lock_info.dart';
 import '../cubit/cluster_cubit.dart';
 
-/// لوحة المورد المشترك (Shared Resource) لعرض قفل موزّع واحد
-/// والتحكّم به من عميلين (Client-A / Client-B) لإظهار الإقصاء المتبادل.
 class LockPanel extends StatefulWidget {
   const LockPanel({super.key});
 
@@ -23,7 +21,7 @@ class _LockPanelState extends State<LockPanel> {
   @override
   void initState() {
     super.initState();
-    // مؤقّت لتحديث العدّاد التنازلي (TTL) كل ثانية.
+
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
@@ -58,7 +56,7 @@ class _LockPanelState extends State<LockPanel> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 16),
-                // حالة القفل: المالك + رمز الحماية + المهلة المتبقية.
+
                 Expanded(
                   child: held
                       ? Text(
@@ -70,7 +68,7 @@ class _LockPanelState extends State<LockPanel> {
                           style: const TextStyle(color: Colors.green),
                         ),
                 ),
-                // أزرار العميلين.
+
                 _clientButton(context, cubit, 'Client-A', owner, held),
                 const SizedBox(width: 8),
                 _clientButton(context, cubit, 'Client-B', owner, held),
@@ -99,7 +97,7 @@ class _LockPanelState extends State<LockPanel> {
       );
     }
     return FilledButton.tonalIcon(
-      // معطّل إن كان القفل مشغولاً من الآخر.
+
       onPressed: held ? null : () => cubit.acquire(LockPanel.lockName, clientId),
       icon: const Icon(Icons.lock, size: 16),
       label: Text('Acquire ($clientId)'),
