@@ -26,13 +26,13 @@ function startDashboardServer(node) {
 
   wss.on('connection', (socket) => {
     clients.add(socket);
-    console.log(`[${node.id}] لوحة جديدة اتصلت (المجموع: ${clients.size})`);
+    console.log(`[${node.id}] dashboard connected (total: ${clients.size})`);
 
     socket.send(JSON.stringify({ type: 'state', data: node.getSnapshot() }));
 
     socket.on('close', () => {
       clients.delete(socket);
-      console.log(`[${node.id}] لوحة قطعت الاتصال (المجموع: ${clients.size})`);
+      console.log(`[${node.id}] dashboard disconnected (total: ${clients.size})`);
     });
   });
 
@@ -46,7 +46,7 @@ function startDashboardServer(node) {
   };
 
   server.listen(node.port, () => {
-    console.log(`[${node.id}] يعمل على المنفذ ${node.port}`);
+    console.log(`[${node.id}] listening on port ${node.port}`);
     console.log(`         HTTP:  http://localhost:${node.port}/health`);
     console.log(`         WS:    ws://localhost:${node.port}`);
   });

@@ -12,10 +12,10 @@ for (const node of CLUSTER) {
   children.push(child);
 }
 
-console.log(`\n🚀 تم تشغيل ${CLUSTER.length} عُقَد. اضغط Ctrl+C للإيقاف.\n`);
+console.log(`\nStarted ${CLUSTER.length} nodes. Press Ctrl+C to stop.\n`);
 
 process.on('SIGINT', () => {
-  console.log('\n⏹️  جارٍ إيقاف العنقود...');
+  console.log('\nStopping the cluster...');
   for (const child of children) {
     child.kill('SIGINT');
   }

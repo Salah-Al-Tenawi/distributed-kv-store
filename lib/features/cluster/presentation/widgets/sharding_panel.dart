@@ -59,7 +59,7 @@ class _ShardingPanelState extends State<ShardingPanel> {
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Text(
-                        'توزيع المفاتيح على العُقَد الحيّة — اقتل عقدة فتنتقل مفاتيحها فقط',
+                        'Keys are distributed over live nodes - kill a node and only its keys move',
                         style: TextStyle(fontSize: 11, color: Colors.grey),
                       ),
                     ),
@@ -107,7 +107,7 @@ class _ShardingPanelState extends State<ShardingPanel> {
                       child: TextField(
                         controller: _keyController,
                         decoration: const InputDecoration(
-                          labelText: 'اكتب مفتاحاً لمعرفة عقدته',
+                          labelText: 'Type a key to see its node',
                           isDense: true,
                           border: OutlineInputBorder(),
                         ),

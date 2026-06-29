@@ -72,7 +72,7 @@ class ClusterDashboardPage extends StatelessWidget {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
-                    Text('بانتظار العُقَد... شغّل الـ backend'),
+                    Text('Waiting for nodes... start the backend'),
                   ],
                 ),
               );
@@ -87,7 +87,7 @@ class ClusterDashboardPage extends StatelessWidget {
                       color: Colors.amber.withValues(alpha: 0.25),
                       padding: const EdgeInsets.all(10),
                       child: const Text(
-                        '⚡ Network Partitioned — الأقلية متجمّدة، والأغلبية فقط تثبّت الكتابة (Split-Brain protection)',
+                        'Network Partitioned - the minority is frozen, only the majority commits writes (Split-Brain protection)',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),

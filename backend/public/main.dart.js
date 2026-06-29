@@ -39971,7 +39971,7 @@ $1(a){return J.vC(a.z)},
 $S:68}
 A.Hv.prototype={
 N(a){var s=null,r=t.d,q=t.Gg,p=A.c([A.nh(new A.YQ(),r,q),B.cY,A.nh(new A.YR(),r,q)],t.p)
-r=new A.zO(new A.vS(B.UE,p,new A.S5(s,s,1/0,56),s),A.nh(new A.YS(),r,q),s)
+r=new A.zO(new A.vS(B.UF,p,new A.S5(s,s,1/0,56),s),A.nh(new A.YS(),r,q),s)
 return new A.w3(r,new A.YT(),r,s,t.Ii)}}
 A.YT.prototype={
 $1(a){var s=$.iv().$1$0(t.d)
@@ -39994,7 +39994,7 @@ if(k.ga3(k))return B.C8
 s=A.m0(a,!1,t.d)
 k=t.p
 r=A.c([],k)
-if(b.gpV())r.push(A.nA(B.UB,B.x,B.hi.jA(0.25),l,l,l,l,B.mP,1/0))
+if(b.gpV())r.push(A.nA(B.UK,B.x,B.hi.jA(0.25),l,l,l,l,B.mP,1/0))
 r.push(B.cp)
 k=A.c([],k)
 for(q=b.glu(),p=q.length,o=0;o<q.length;q.length===p||(0,A.A)(q),++o){n=q[o]
@@ -40083,8 +40083,8 @@ p=A.ce('Resource "seat-12A"',m,m,m,B.d0,m,m)
 if(r){k=j.b
 o=j.c-Date.now()
 n=o>0?B.d.rN(o/1000):0
-n=A.ce("\u0645\u0642\u0641\u0648\u0644 \u0644\u0640 "+A.m(q)+"  \xb7  Fencing Token: "+k+"  \xb7  TTL: "+n+"s",m,m,m,B.TC,m,m)
-k=n}else{n=A.ce("FREE"+(!k?"  (\u0622\u062e\u0631 token: "+j.b+")":""),m,m,m,B.Tm,m,m)
+n=A.ce("Locked by "+A.m(q)+"  \xb7  Fencing Token: "+k+"  \xb7  TTL: "+n+"s",m,m,m,B.TC,m,m)
+k=n}else{n=A.ce("FREE"+(!k?"  (last token: "+j.b+")":""),m,m,m,B.Tm,m,m)
 k=n}n=this.a
 return A.Ha(new A.cj(B.df,A.fq(A.c([s,B.cY,p,B.Pi,A.Iq(k),n.K9(a,l,"Client-A",q,r),B.cY,n.K9(a,l,"Client-B",q,r)],t.p),B.a2,B.T,B.aG,0),m),B.jb)},
 $S:60}
@@ -40105,14 +40105,14 @@ g=A.o9(g,r.grp(),q,30)
 s=A.ce(j.a,q,q,q,B.U5,q,q)
 i=m?"OFFLINE":i.b.toUpperCase()
 i=A.c([new A.CJ(l,k,q),B.cp,g,B.Pk,s,B.yw,A.ce(i,q,q,q,A.h0(q,q,r.grp(),q,q,q,q,q,q,q,q,q,q,q,B.fZ,q,q,!0,q,q,q,q,q,q,q,q),q,q)],t.p)
-if(J.vC(j.z))i.push(B.UG)
+if(J.vC(j.z))i.push(B.UH)
 i.push(B.cp)
 i.push(A.ce("Term: "+j.d+"  \xb7  commit: "+j.x,q,q,q,q,q,q))
 if(l&&!h&&j.e!=null)i.push(A.ce("\u2192 "+A.m(j.e),q,q,q,B.Ri,q,q))
 i.push(B.cp)
 i.push(new A.QD(j.w,q))
 i.push(B.dK)
-i.push(A.i9(m?A.aqO(B.G8,B.UK,r.f,A.aqP(q,q,q,q,q,q,q,q,q,B.bk,q,q,q,q,q,q,q,q,q,q)):A.aqO(B.G0,B.UI,r.e,A.aqP(q,q,q,q,q,q,q,q,q,B.c2,q,q,q,q,q,q,q,q,q,q)),q,1/0))
+i.push(A.i9(m?A.aqO(B.G8,B.UM,r.f,A.aqP(q,q,q,q,q,q,q,q,q,B.bk,q,q,q,q,q,q,q,q,q,q)):A.aqO(B.G0,B.UL,r.e,A.aqP(q,q,q,q,q,q,q,q,q,B.c2,q,q,q,q,q,q,q,q,q,q)),q,1/0))
 return A.nA(A.le(i,B.a2,B.T,B.bw),B.x,q,q,new A.dL(p,q,o,n,q,q,B.b_),q,q,B.df,170)}}
 A.QD.prototype={
 N(a){var s,r,q=null,p=B.l.jA(0.04),o=A.nj(8),n=this.c
@@ -40162,7 +40162,7 @@ for(e=c.length,d=t.s,r=0;r<c.length;c.length===e||(0,A.A)(c),++r)f.m(0,c[r],A.c(
 for(r=0;r<12;++r){q=B.Hj[r]
 p=s.U6(q)
 if(p!=null)f.i(0,p).push(q)}e=t.p
-d=A.fq(A.c([B.FZ,B.cY,B.Uz,B.c7,B.Fm],e),B.a2,B.T,B.aG,0)
+d=A.fq(A.c([B.FZ,B.cY,B.Uz,B.c7,B.Fl],e),B.a2,B.T,B.aG,0)
 o=A.c([],e)
 for(n=c.length,r=0;r<c.length;c.length===n||(0,A.A)(c),++r){m=c[r]
 l=B.kg.jA(0.06)
@@ -40198,7 +40198,7 @@ N(a){return A.nh(new A.adI(),t.d,t.Gg)}}
 A.adI.prototype={
 $2(a,b){var s,r,q,p,o,n,m,l,k,j,i=null,h=A.m0(a,!1,t.d),g=b.gmk(),f=g==null?i:g.at
 g=t.p
-s=A.c([A.fq(A.c([B.Gb,B.cY,B.Uy,B.c7,B.Fl,A.aut(B.G9,B.UC,b.gmk()!=null?new A.adG(h):i)],g),B.a2,B.T,B.aG,0),B.dK],g)
+s=A.c([A.fq(A.c([B.Gb,B.cY,B.Uy,B.c7,B.Fm,A.aut(B.G9,B.UD,b.gmk()!=null?new A.adG(h):i)],g),B.a2,B.T,B.aG,0),B.dK],g)
 if(f!=null){r=f.c
 q=r==="COMMITTED"
 p=q?B.bk.jA(0.2):B.c2.jA(0.2)
@@ -40208,7 +40208,7 @@ for(q=f.b.gfU(),q=q.gY(q);q.t();){n=q.gL()
 m=n.a
 n=n.b
 l=n==="YES"?B.bk:B.c2
-o.push(A.ce(m+":"+n,i,i,i,new A.k(!0,l,i,"monospace",i,i,11,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i),i,i))}B.b.R(s,A.c([A.fq(A.c([new A.Hd(r,p,i),B.c7,A.Iq(A.NB(B.cb,o,0,6))],g),B.a2,B.T,B.aG,0),B.dK],g))}s.push(B.UL)
+o.push(A.ce(m+":"+n,i,i,i,new A.k(!0,l,i,"monospace",i,i,11,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i),i,i))}B.b.R(s,A.c([A.fq(A.c([new A.Hd(r,p,i),B.c7,A.Iq(A.NB(B.cb,o,0,6))],g),B.a2,B.T,B.aG,0),B.dK],g))}s.push(B.UB)
 g=A.c([],g)
 for(r=b.glu(),q=r.length,k=0;k<r.length;r.length===q||(0,A.A)(r),++k){j=r[k]
 g.push(new A.It(A.ce(j.a,i,i,i,i,i,i),j.as,new A.adH(h,j),B.c2.jA(0.2),i))}s.push(A.NB(B.cb,g,0,8))
@@ -40235,12 +40235,12 @@ d=this.a
 if(d.d==null)d.d=c.length!==0?B.b.ga2(c):g
 if(d.e==null)d.e=c.length>1?c[1]:g
 s=t.p
-r=A.fq(A.c([B.G6,B.cY,B.UF,B.c7,A.Iq(A.ce("\u0627\u0644\u062a\u0631\u062a\u064a\u0628: ["+B.b.bl(c,", ")+"]  \u2014  \u062d\u062f\u062b \u0645\u062d\u0644\u0651\u064a \u064a\u0632\u064a\u062f \u0639\u062f\u0651\u0627\u062f \u0627\u0644\u0639\u0642\u062f\u0629\u061b \u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u062a\u062f\u0645\u062c \u0627\u0644\u0633\u0627\u0639\u0627\u062a",g,g,g,B.l5,g,g))],s),B.a2,B.T,B.aG,0)
+r=A.fq(A.c([B.G6,B.cY,B.UG,B.c7,A.Iq(A.ce("Order: ["+B.b.bl(c,", ")+"]  -  a local event bumps the node counter; a message merges clocks",g,g,g,B.l5,g,g))],s),B.a2,B.T,B.aG,0)
 q=A.c([],s)
 for(p=e.length,o=0;o<e.length;e.length===p||(0,A.A)(e),++o){n=e[o]
 m=B.tH.jA(0.06)
 l=new A.as(8,8)
-q.push(A.nA(A.fq(A.c([A.ce(n.a+": ",g,g,g,B.l6,g,g),A.ce(d.a3I(n,c),g,g,g,B.Sv,g,g),B.yu,A.aqq(g,g,B.G7,g,g,new A.anf(f,n),g,g,"\u062d\u062f\u062b \u0645\u062d\u0644\u0651\u064a",B.ze)],s),B.a2,B.T,B.bw,0),B.x,g,g,new A.dL(m,g,g,new A.cg(l,l,l,l),g,g,B.b_),g,g,B.F5,g))}q=A.NB(B.cb,q,8,12)
+q.push(A.nA(A.fq(A.c([A.ce(n.a+": ",g,g,g,B.l6,g,g),A.ce(d.a3I(n,c),g,g,g,B.Sv,g,g),B.yu,A.aqq(g,g,B.G7,g,g,new A.anf(f,n),g,g,"Local event",B.ze)],s),B.a2,B.T,B.bw,0),B.x,g,g,new A.dL(m,g,g,new A.cg(l,l,l,l),g,g,B.b_),g,g,B.F5,g))}q=A.NB(B.cb,q,8,12)
 p=d.d
 m=t.FG
 l=A.c([],m)
@@ -85130,8 +85130,8 @@ B.x=new A.qw(0,"none")
 B.XX=new A.aek(0,"material")
 B.Cc=new A.wj(null)
 B.Pj=new A.eN(null,16,null,null)
-B.UJ=new A.dg("\u0628\u0627\u0646\u062a\u0638\u0627\u0631 \u0627\u0644\u0639\u064f\u0642\u064e\u062f... \u0634\u063a\u0651\u0644 \u0627\u0644\u0640 backend",null,null,null,null,null,null,null,null)
-B.HN=s([B.Cc,B.Pj,B.UJ],t.p)
+B.UI=new A.dg("Waiting for nodes... start the backend",null,null,null,null,null,null,null,null)
+B.HN=s([B.Cc,B.Pj,B.UI],t.p)
 B.E0=new A.wy(B.aD,B.T,B.bw,B.a2,null,B.dP,null,0,B.HN,null)
 B.C8=new A.jH(B.W,null,null,B.E0,null)
 B.mr=new A.q(1,0.9803921568627451,0.9803921568627451,0.9803921568627451,B.e)
@@ -85148,8 +85148,8 @@ B.ma=new A.q(1,0.12941176470588237,0.12941176470588237,0.12941176470588237,B.e)
 B.Kf=new A.cb([50,B.mr,100,B.Dn,200,B.Da,300,B.mt,350,B.dc,400,B.iG,500,B.mz,600,B.eb,700,B.cI,800,B.ch,850,B.iM,900,B.ma],t.pl)
 B.eI=new A.hW(B.Kf,1,0.6196078431372549,0.6196078431372549,0.6196078431372549,B.e)
 B.l5=new A.k(!0,B.eI,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.UH=new A.dg("empty store",null,B.l5,null,null,null,null,null,null)
-B.C9=new A.jH(B.W,null,null,B.UH,null)
+B.UJ=new A.dg("empty store",null,B.l5,null,null,null,null,null,null)
+B.C9=new A.jH(B.W,null,null,B.UJ,null)
 B.Ca=new A.wi(null,null,null,null,null,null,null,null,null)
 B.db=new A.qr(0,"none")
 B.cH=new A.qr(1,"isTrue")
@@ -85486,11 +85486,11 @@ B.jK=new A.nN(!1,!1,!1,!0)
 B.mW=new A.nO(!1,!1,!1,!1)
 B.mX=new A.nO(!1,!1,!1,!0)
 B.fV=new A.Iw(0,"tight")
+B.UE=new A.dg("Keys are distributed over live nodes - kill a node and only its keys move",null,B.l5,null,null,null,null,null,null)
+B.Fl=new A.r3(1,B.fV,B.UE,null)
 B.yZ=new A.k(!0,B.eI,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.UD=new A.dg("\u0645\u0639\u0627\u0645\u0644\u0629 \u0630\u0631\u0651\u064a\u0629: set A=100, B=200 (\u0627\u0644\u0643\u0644 \u0623\u0648 \u0644\u0627 \u0623\u062d\u062f)",null,B.yZ,null,null,null,null,null,null)
-B.Fl=new A.r3(1,B.fV,B.UD,null)
-B.UM=new A.dg("\u062a\u0648\u0632\u064a\u0639 \u0627\u0644\u0645\u0641\u0627\u062a\u064a\u062d \u0639\u0644\u0649 \u0627\u0644\u0639\u064f\u0642\u064e\u062f \u0627\u0644\u062d\u064a\u0651\u0629 \u2014 \u0627\u0642\u062a\u0644 \u0639\u0642\u062f\u0629 \u0641\u062a\u0646\u062a\u0642\u0644 \u0645\u0641\u0627\u062a\u064a\u062d\u0647\u0627 \u0641\u0642\u0637",null,B.l5,null,null,null,null,null,null)
-B.Fm=new A.r3(1,B.fV,B.UM,null)
+B.UC=new A.dg("Atomic transaction: set A=100, B=200 (all or nothing)",null,B.yZ,null,null,null,null,null,null)
+B.Fm=new A.r3(1,B.fV,B.UC,null)
 B.Fn=new A.xj(null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.fM=new A.jP(!1,!1,!1,!1)
 B.fN=new A.jP(!1,!1,!1,!0)
@@ -85615,7 +85615,7 @@ B.Ge=new A.xU(null,null,null,null,null,null,null,null,null,B.nc,B.lX,!1,null,!1,
 B.lK=new A.aI(B.l,1,B.t,-1)
 B.kt=new A.hm(4,B.e_,B.lK)
 B.Gf=new A.lx(null,null,null,"Value",null,null,null,null,null,null,null,null,null,null,null,null,!0,!0,null,null,null,null,null,null,!0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.kt,!0,null,null,null,null)
-B.Gg=new A.lx(null,null,null,"\u0627\u0643\u062a\u0628 \u0645\u0641\u062a\u0627\u062d\u0627\u064b \u0644\u0645\u0639\u0631\u0641\u0629 \u0639\u0642\u062f\u062a\u0647",null,null,null,null,null,null,null,null,null,null,null,null,!0,!0,null,null,null,null,null,null,!0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.kt,!0,null,null,null,null)
+B.Gg=new A.lx(null,null,null,"Type a key to see its node",null,null,null,null,null,null,null,null,null,null,null,null,!0,!0,null,null,null,null,null,null,!0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.kt,!0,null,null,null,null)
 B.XR=new A.lx(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,!0,!0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,!0,null,null,null,null)
 B.Gh=new A.lx(null,null,null,"Key",null,null,null,null,null,null,null,null,null,null,null,null,!0,!0,null,null,null,null,null,null,!0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.kt,!0,null,null,null,null)
 B.Gj=new A.dB(0.25,0.5,B.ae)
@@ -87596,15 +87596,15 @@ B.Ux=new A.dg("Send",null,null,null,null,null,null,null,null)
 B.Uy=new A.dg("Two-Phase Commit (2PC)",null,B.d0,null,null,null,null,null,null)
 B.Uz=new A.dg("Consistent Hashing / Sharding",null,B.d0,null,null,null,null,null,null)
 B.UA=new A.dg("PUT",null,null,null,null,null,null,null,null)
-B.UB=new A.dg("\u26a1 Network Partitioned \u2014 \u0627\u0644\u0623\u0642\u0644\u064a\u0629 \u0645\u062a\u062c\u0645\u0651\u062f\u0629\u060c \u0648\u0627\u0644\u0623\u063a\u0644\u0628\u064a\u0629 \u0641\u0642\u0637 \u062a\u062b\u0628\u0651\u062a \u0627\u0644\u0643\u062a\u0627\u0628\u0629 (Split-Brain protection)",null,B.l6,B.f2,null,null,null,null,null)
-B.UC=new A.dg("Run 2PC",null,null,null,null,null,null,null,null)
-B.UE=new A.dg("Distributed KV Store \u2014 Cluster",null,null,null,null,null,null,null,null)
-B.UF=new A.dg("Vector Clocks",null,B.d0,null,null,null,null,null,null)
+B.UB=new A.dg("Force a node to vote ABORT:",null,B.yZ,null,null,null,null,null,null)
+B.UD=new A.dg("Run 2PC",null,null,null,null,null,null,null,null)
+B.UF=new A.dg("Distributed KV Store \u2014 Cluster",null,null,null,null,null,null,null,null)
+B.UG=new A.dg("Vector Clocks",null,B.d0,null,null,null,null,null,null)
 B.Tk=new A.k(!0,B.hi,null,null,null,null,10,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.UG=new A.dg("\u26a1 isolated",null,B.Tk,null,null,null,null,null,null)
-B.UI=new A.dg("Kill",null,null,null,null,null,null,null,null)
-B.UK=new A.dg("Revive",null,null,null,null,null,null,null,null)
-B.UL=new A.dg("\u0645\u062d\u0627\u0643\u0627\u0629 \u0631\u0641\u0636 \u0639\u0642\u062f\u0629 (vote ABORT):",null,B.yZ,null,null,null,null,null,null)
+B.UH=new A.dg("\u26a1 isolated",null,B.Tk,null,null,null,null,null,null)
+B.UK=new A.dg("Network Partitioned - the minority is frozen, only the majority commits writes (Split-Brain protection)",null,B.l6,B.f2,null,null,null,null,null)
+B.UL=new A.dg("Kill",null,null,null,null,null,null,null,null)
+B.UM=new A.dg("Revive",null,null,null,null,null,null,null,null)
 B.XW=new A.adr(0,"system")
 B.Lw=new A.h(0.056,0.024)
 B.LK=new A.h(0.108,0.3085)

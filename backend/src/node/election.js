@@ -31,26 +31,26 @@ class Election {
     this.node.state = NodeState.FOLLOWER;
     this.node.leaderId = null;
     this.node.suspectedOffline = [];
-    console.log(`[${this.node.id}] 💀 قُتلت (CRASHED) — توقّفت عن المشاركة`);
+    console.log(`[${this.node.id}] CRASHED - stopped participating`);
     this.node.notifyChange();
   }
 
   revive() {
     if (this.node.alive) return;
     this.node.alive = true;
-    console.log(`[${this.node.id}] ❤️  أُحييت (REVIVED) — عادت تابعاً (Follower)`);
+    console.log(`[${this.node.id}] REVIVED - back as Follower`);
     this.becomeFollower(this.node.term);
   }
 
   setPartition(blockedIds) {
     this.node.blockedPeers = new Set(blockedIds);
-    console.log(`[${this.node.id}] ⚡ انقسام شبكة — حجب: [${blockedIds.join(', ')}]`);
+    console.log(`[${this.node.id}] network partition - blocked: [${blockedIds.join(', ')}]`);
     this.node.notifyChange();
   }
 
   heal() {
     this.node.blockedPeers = new Set();
-    console.log(`[${this.node.id}] 🔗 شُفيت الشبكة (HEALED) — عاد التواصل الكامل`);
+    console.log(`[${this.node.id}] network HEALED - connectivity restored`);
     this.node.notifyChange();
   }
 
@@ -91,7 +91,7 @@ class Election {
     this.node.votesReceived = 1;
     this.node.leaderId = null;
     this.node.notifyChange();
-    console.log(`[${this.node.id}] ⏱️  انتهت المهلة → مرشّح (CANDIDATE) في term=${this.node.term}`);
+    console.log(`[${this.node.id}] election timeout -> CANDIDATE in term=${this.node.term}`);
 
     this.resetElectionTimer();
 
@@ -125,7 +125,7 @@ class Election {
     this.node.matchIndex = { [this.node.id]: this.node.log.length - 1 };
     for (const peer of this.peers) this.node.matchIndex[peer.id] = -1;
     this.node.notifyChange();
-    console.log(`[${this.node.id}] 👑 أصبح قائداً (LEADER) في term=${this.node.term}`);
+    console.log(`[${this.node.id}] became LEADER in term=${this.node.term}`);
     this.startHeartbeats();
   }
 
@@ -171,7 +171,7 @@ class Election {
       if (lock.expiresAt <= now && !this.releasing.has(name)) {
         this.releasing.add(name);
         leaderAppend(this.node, { op: 'LOCK_RELEASE', key: name });
-        console.log(`[${this.node.id}] ⏰ انتهت مهلة القفل "${name}" — تحرير تلقائي`);
+        console.log(`[${this.node.id}] lock "${name}" expired - auto released`);
       }
     }
 
@@ -197,7 +197,7 @@ class Election {
     if (changed) {
       const newlyDead = offline.filter((id) => !this.node.suspectedOffline.includes(id));
       for (const id of newlyDead) {
-        console.log(`[${this.node.id}] ⚠️  القرين ${id} توقّف عن النبض — تمييزه OFFLINE`);
+        console.log(`[${this.node.id}] peer ${id} stopped responding - marked OFFLINE`);
       }
       this.node.suspectedOffline = offline;
       this.node.notifyChange();
@@ -216,7 +216,7 @@ class Election {
     if (reply.voteGranted) {
       this.node.votesReceived += 1;
       const majority = Math.floor((this.peers.length + 1) / 2) + 1;
-      console.log(`[${this.node.id}] 🗳️  أصوات=${this.node.votesReceived}/${this.peers.length + 1} (نحتاج ${majority})`);
+      console.log(`[${this.node.id}] votes=${this.node.votesReceived}/${this.peers.length + 1} (need ${majority})`);
       if (this.node.votesReceived >= majority) {
         this.becomeLeader();
       }

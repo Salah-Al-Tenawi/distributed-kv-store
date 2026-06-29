@@ -35,7 +35,7 @@ class TxnPanel extends StatelessWidget {
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Text(
-                        'معاملة ذرّية: set A=100, B=200 (الكل أو لا أحد)',
+                        'Atomic transaction: set A=100, B=200 (all or nothing)',
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ),
@@ -89,7 +89,7 @@ class TxnPanel extends StatelessWidget {
                   const SizedBox(height: 10),
                 ],
 
-                const Text('محاكاة رفض عقدة (vote ABORT):',
+                const Text('Force a node to vote ABORT:',
                     style: TextStyle(fontSize: 12, color: Colors.grey)),
                 Wrap(
                   spacing: 8,

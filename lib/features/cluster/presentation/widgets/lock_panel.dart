@@ -60,11 +60,11 @@ class _LockPanelState extends State<LockPanel> {
                 Expanded(
                   child: held
                       ? Text(
-                          'مقفول لـ $owner  ·  Fencing Token: ${lock!.token}  ·  TTL: ${lock.secondsLeft}s',
+                          'Locked by $owner  ·  Fencing Token: ${lock!.token}  ·  TTL: ${lock.secondsLeft}s',
                           style: const TextStyle(color: Colors.red),
                         )
                       : Text(
-                          'FREE${lock != null ? '  (آخر token: ${lock.token})' : ''}',
+                          'FREE${lock != null ? '  (last token: ${lock.token})' : ''}',
                           style: const TextStyle(color: Colors.green),
                         ),
                 ),

@@ -46,7 +46,7 @@ class _VectorClockPanelState extends State<VectorClockPanel> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'الترتيب: [${ids.join(', ')}]  —  حدث محلّي يزيد عدّاد العقدة؛ الرسالة تدمج الساعات',
+                        'Order: [${ids.join(', ')}]  -  a local event bumps the node counter; a message merges clocks',
                         style: const TextStyle(fontSize: 11, color: Colors.grey),
                       ),
                     ),
@@ -77,7 +77,7 @@ class _VectorClockPanelState extends State<VectorClockPanel> {
                                     fontFamily: 'monospace')),
                             const SizedBox(width: 6),
                             IconButton(
-                              tooltip: 'حدث محلّي',
+                              tooltip: 'Local event',
                               visualDensity: VisualDensity.compact,
                               onPressed: () => cubit.vcEvent(node.port),
                               icon: const Icon(Icons.add_circle_outline,

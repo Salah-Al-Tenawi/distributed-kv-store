@@ -26,7 +26,7 @@ function registerLockRoutes(app, node, election) {
     const token = (current?.token ?? 0) + 1;
     const expiresAt = Date.now() + TIMING.lockTtl;
     leaderAppend(node, { op: 'LOCK_ACQUIRE', key: lockName, owner: clientId, token, expiresAt });
-    console.log(`[${node.id}] 🔒 منح القفل "${lockName}" لـ ${clientId} (token=${token})`);
+    console.log(`[${node.id}] granted lock "${lockName}" to ${clientId} (token=${token})`);
     election.sendHeartbeat();
     node.notifyChange();
     res.json({ ok: true, granted: true, token, expiresAt });
@@ -42,7 +42,7 @@ function registerLockRoutes(app, node, election) {
       return res.json({ ok: false, error: 'not the owner' });
     }
     leaderAppend(node, { op: 'LOCK_RELEASE', key: lockName });
-    console.log(`[${node.id}] 🔓 حرّر ${clientId} القفل "${lockName}"`);
+    console.log(`[${node.id}] ${clientId} released lock "${lockName}"`);
     election.sendHeartbeat();
     node.notifyChange();
     res.json({ ok: true });

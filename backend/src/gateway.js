@@ -12,7 +12,7 @@ const publicDir = path.join(__dirname, '..', 'public');
 for (const node of CLUSTER) {
   startNode(node);
 }
-console.log(`🚀 البوّابة شغّلت ${CLUSTER.length} عُقَد داخلياً (in-process).`);
+console.log(`Gateway started ${CLUSTER.length} nodes in-process.`);
 
 const app = express();
 app.use(express.json());
@@ -70,8 +70,8 @@ server.on('upgrade', (req, socket, head) => {
 });
 
 server.listen(PUBLIC_PORT, () => {
-  console.log(`🌐 البوّابة تعمل على المنفذ ${PUBLIC_PORT}`);
-  console.log(`   الواجهة:  http://localhost:${PUBLIC_PORT}/`);
+  console.log(`Gateway listening on port ${PUBLIC_PORT}`);
+  console.log(`   Web UI:  http://localhost:${PUBLIC_PORT}/`);
 });
 
 process.on('SIGINT', () => process.exit(0));

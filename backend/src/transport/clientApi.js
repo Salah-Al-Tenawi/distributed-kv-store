@@ -11,7 +11,7 @@ function registerClientRoutes(app, node, election) {
     if (!key) return res.status(400).json({ ok: false, error: 'key required' });
 
     leaderAppend(node, { op: 'SET', key, value: String(value ?? '') });
-    console.log(`[${node.id}] 📝 أمر جديد في السجلّ: SET ${key}=${value}`);
+    console.log(`[${node.id}] new log command: SET ${key}=${value}`);
     election.sendHeartbeat();
     node.notifyChange();
     res.json({ ok: true, logIndex: node.log.length - 1 });
@@ -25,7 +25,7 @@ function registerClientRoutes(app, node, election) {
     if (!key) return res.status(400).json({ ok: false, error: 'key required' });
 
     leaderAppend(node, { op: 'DEL', key });
-    console.log(`[${node.id}] 📝 أمر جديد في السجلّ: DEL ${key}`);
+    console.log(`[${node.id}] new log command: DEL ${key}`);
     election.sendHeartbeat();
     node.notifyChange();
     res.json({ ok: true, logIndex: node.log.length - 1 });

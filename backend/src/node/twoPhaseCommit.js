@@ -33,7 +33,7 @@ async function runTransaction(node, rpc, peers, election, operations) {
   }
 
   node.lastTxn = { id: txId, operations, votes, result, ts: Date.now() };
-  console.log(`[${node.id}] 🧾 معاملة 2PC ${txId}: ${result} | الأصوات: ${JSON.stringify(votes)}`);
+  console.log(`[${node.id}] 2PC transaction ${txId}: ${result} | votes: ${JSON.stringify(votes)}`);
   node.notifyChange();
   return node.lastTxn;
 }

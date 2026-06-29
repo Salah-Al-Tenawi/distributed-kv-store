@@ -24,7 +24,7 @@ function applyCommitted(node) {
       };
     }
     console.log(
-      `[${node.id}] ✅ طُبّقت المدخلة #${node.lastApplied}: ${entry.op} ${entry.key}` +
+      `[${node.id}] applied entry #${node.lastApplied}: ${entry.op} ${entry.key}` +
         (entry.op === 'SET' ? `=${entry.value}` : ''),
     );
   }
